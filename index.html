@@ -14,7 +14,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdro
 .brand{display:flex;align-items:center;min-width:220px;text-decoration:none}
 .brand img{display:block;width:230px;height:76px;object-fit:contain}
 nav{display:flex;align-items:center;gap:25px;margin-left:auto}nav a{color:#39283d;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}nav a:hover{color:var(--pink)}
-.actions{display:flex;gap:10px;align-items:center}.dashboard-icon{display:none;width:42px;height:42px;border:1px solid #f3b6d9;border-radius:50%;background:linear-gradient(135deg,#fff0f8,#f1e6ff);color:#9d176d;font-size:21px;cursor:pointer;box-shadow:0 5px 14px #a7357a20}.dashboard-icon.visible{display:inline-grid;place-items:center}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
+.actions{display:flex;gap:10px;align-items:center}.dashboard-icon{display:none;width:42px;height:42px;border:1px solid #f3b6d9;border-radius:50%;background:linear-gradient(135deg,#fff0f8,#f1e6ff);color:#9d176d;font-size:21px;cursor:pointer;box-shadow:0 5px 14px #a7357a20}.dashboard-icon.visible{display:inline-grid;place-items:center}.role-dashboard-section{scroll-margin-top:100px}#roleDashboardContent .tile{margin-top:14px}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
 .hero{max-width:1240px;margin:0 auto;padding:58px 22px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;color:#a20d68;background:#ffe8f5;border:1px solid #ffd0e9;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 h1{font-size:clamp(38px,5.5vw,66px);line-height:1.04;letter-spacing:-.045em;margin:18px 0 15px}h1 span{background:linear-gradient(90deg,#ed168d,#8c35d2,#e4a12a);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -57,6 +57,14 @@ footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}foot
     <h3>नई विज़िट / सर्विस दर्ज करें</h3><div class="searchbar"><input id="visitService" type="text" maxlength="120" placeholder="कौन-सी सर्विस की"><input id="visitAmount" type="number" min="0" step="1" placeholder="रकम ₹"></div>
     <div class="searchbar"><input id="visitDiscount" type="number" min="0" step="1" placeholder="डिस्काउंट ₹"><button class="btn book" id="saveVisitBtn" type="button">विज़िट सेव करें</button></div>
     <button class="btn outline" id="sendBillBtn" type="button">WhatsApp पर बिल भेजें</button></div></div>
+ </section>
+ <section class="section" id="role-dashboard" hidden>
+  <div class="tile">
+   <span class="eyebrow" id="roleDashboardLabel">MY SALON DASHBOARD</span>
+   <h2 id="roleDashboardTitle">Dashboard</h2>
+   <p id="roleDashboardIntro"></p>
+   <div id="roleDashboardContent"></div>
+  </div>
  </section>
  <section class="section" id="services"><div class="section-head"><div><h2>Beauty services, all in one place</h2><p>Explore services and offers from approved salons.</p></div></div></section>
  <section class="section" id="login"><div class="tile"><h2>Are you a salon owner?</h2><p>Register your salon and reach more customers. Owner registration and dashboard will be available in the next setup phase.</p><a class="btn book" href="#contact">Coming soon</a></div></section>
@@ -150,67 +158,132 @@ try {
   console.error('MY SALON Firebase initialization failed:', error);
 }
 
+let signedInRole = null;
+const dashboardBtn = document.getElementById('dashboardBtn');
+const roleDashboard = document.getElementById('role-dashboard');
+
+function setRoleIcon(role) {
+  signedInRole = role;
+  const icons = {owner:'🏪', customer:'👤', admin:'🛡️'};
+  const labels = {owner:'Shop Owner Dashboard', customer:'Customer Dashboard', admin:'Super Admin Dashboard'};
+  dashboardBtn.textContent = icons[role] || '👤';
+  dashboardBtn.title = labels[role] || 'Dashboard';
+  dashboardBtn.setAttribute('aria-label', labels[role] || 'Dashboard');
+  dashboardBtn.classList.toggle('visible', !!role);
+}
+
+function showRoleDashboard(title, intro, html='') {
+  document.getElementById('roleDashboardTitle').textContent = title;
+  document.getElementById('roleDashboardIntro').textContent = intro;
+  const content = document.getElementById('roleDashboardContent');
+  content.replaceChildren();
+  if (html) content.innerHTML = html;
+  roleDashboard.hidden = false;
+  roleDashboard.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function loadAdminDashboard() {
+  const snap = await salonDb.collection('salons').limit(100).get();
+  const content = document.getElementById('roleDashboardContent');
+  content.replaceChildren();
+  const summary = document.createElement('p');
+  summary.textContent = 'कुल सैलून रिकॉर्ड: ' + snap.size;
+  content.appendChild(summary);
+  snap.docs.forEach(doc => {
+    const d=doc.data(), card=document.createElement('article');
+    card.className='tile';
+    const h=document.createElement('h3'); h.textContent=d.name || 'Salon';
+    const p=document.createElement('p'); p.textContent='Status: '+String(d.status || 'PENDING')+' · '+String(d.city || d.area || '');
+    card.append(h,p); content.appendChild(card);
+  });
+  if (!snap.size) content.textContent='अभी कोई सैलून रिकॉर्ड उपलब्ध नहीं है।';
+}
+
+async function loadCustomerDashboard(user) {
+  const content = document.getElementById('roleDashboardContent');
+  content.replaceChildren();
+  const note=document.createElement('p');
+  note.textContent='आपका Google अकाउंट लॉगिन है। आपकी विज़िट हिस्ट्री तभी दिखेगी जब सैलून आपकी ग्राहक प्रोफाइल को इसी अकाउंट से सुरक्षित रूप से लिंक करेगा।';
+  content.appendChild(note);
+  const customers=await salonDb.collection('salonCustomers').where('customerUid','==',user.uid).limit(20).get();
+  if (customers.empty) return;
+  note.textContent='आपकी लिंक की गई ग्राहक प्रोफाइल और विज़िट हिस्ट्री:';
+  for (const customer of customers.docs) {
+    const d=customer.data(), card=document.createElement('article');
+    card.className='tile';
+    const h=document.createElement('h3'); h.textContent=d.name || 'Customer';
+    const p=document.createElement('p'); p.textContent='मोबाइल: '+(d.phone || '—');
+    card.append(h,p);
+    const visits=await salonDb.collection('salonVisits').where('customerId','==',customer.id).limit(100).get();
+    const total=visits.docs.reduce((sum,v)=>sum+Number(v.data().paidAmount || 0),0);
+    const v=document.createElement('p'); v.textContent='कुल विज़िट: '+visits.size+' · कुल भुगतान: '+inr(total);
+    card.appendChild(v); content.appendChild(card);
+  }
+}
+
 async function restoreSalonSession(user) {
   if (!user) {
-    activeSalonId = null;
-    activeSalonName = '';
-    document.getElementById('customer-tools').hidden = true;
-    document.getElementById('dashboardBtn').classList.remove('visible');
-    loginBtn.textContent = 'Login';
-    loginBtn.title = 'Login with Google';
+    activeSalonId=null; activeSalonName=''; setRoleIcon(null);
+    document.getElementById('customer-tools').hidden=true;
+    roleDashboard.hidden=true;
+    loginBtn.textContent='Login'; loginBtn.title='Login with Google';
     return;
   }
-  const email = (user.email || '').toLowerCase();
-  loginBtn.textContent = 'Logout';
-  loginBtn.title = 'Signed in as ' + (user.email || '');
+  loginBtn.textContent='Logout';
+  loginBtn.title='Signed in as '+(user.email || '');
   if (!user.emailVerified) {
-    document.getElementById('customer-tools').hidden = true;
-    status('Verified Google account se login karein.', true);
+    setRoleIcon(null);
+    status('Verified Google account se login karein.',true);
     return;
   }
+  const email=(user.email || '').toLowerCase();
   if (SUPER_ADMINS.includes(email)) {
-    document.getElementById('customer-tools').hidden = true;
-    document.getElementById('dashboardBtn').classList.remove('visible');
-    loginBtn.title = 'Super Admin: ' + email;
+    setRoleIcon('admin');
+    document.getElementById('customer-tools').hidden=true;
+    roleDashboard.hidden=true;
     return;
   }
   try {
-    const owned = await salonDb.collection('salons')
-      .where('ownerUid', '==', user.uid)
-      .limit(10)
-      .get();
-    const approved = owned.docs.find(doc =>
-      ['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase())
-    );
-    if (!approved) {
-      activeSalonId = null;
-      activeSalonName = '';
-      document.getElementById('customer-tools').hidden = true;
-      document.getElementById('dashboardBtn').classList.remove('visible');
-      status('Google account login hai, lekin is account se approved salon abhi link nahi hai.', true);
+    const owned=await salonDb.collection('salons').where('ownerUid','==',user.uid).limit(10).get();
+    const approved=owned.docs.find(doc=>['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase()));
+    if (approved) {
+      activeSalonId=approved.id; activeSalonName=approved.data().name || 'My Salon';
+      document.getElementById('customer-tools').hidden=true;
+      roleDashboard.hidden=true;
+      setRoleIcon('owner');
+      status('Welcome, '+activeSalonName+' — 🏪 icon par click karke dashboard kholen.');
       return;
     }
-    activeSalonId = approved.id;
-    activeSalonName = approved.data().name || 'My Salon';
-    document.getElementById('customer-tools').hidden = true;
-    document.getElementById('dashboardBtn').classList.add('visible');
-    status('Welcome, ' + activeSalonName + ' — Dashboard icon par click karein.');
-  } catch (error) {
-    console.error('MY SALON session restore failed:', error);
-    status('Login yaad hai, lekin salon details load nahi hui. Firestore Rules aur salon approval check karein.', true);
+    activeSalonId=null; activeSalonName='';
+    document.getElementById('customer-tools').hidden=true;
+    setRoleIcon('customer');
+    status('Customer login successful. 👤 icon par click karke dashboard kholen.');
+  } catch(error) {
+    console.error('MY SALON session restore failed:',error);
+    setRoleIcon('customer');
+    status('Login ho gaya, lekin role details load nahi hui. Dashboard mein dobara try karein.',true);
   }
 }
 
-if (salonAuth) {
-  salonAuth.onAuthStateChanged(user => {
-    restoreSalonSession(user).catch(error => console.error('Session restore error:', error));
-  });
-}
+if (salonAuth) salonAuth.onAuthStateChanged(user=>restoreSalonSession(user).catch(error=>console.error('Session restore error:',error)));
 
-document.getElementById('dashboardBtn').addEventListener('click', () => {
-  if (!activeSalonId || !salonAuth || !salonAuth.currentUser) return;
-  document.getElementById('customer-tools').hidden = false;
-  document.getElementById('customer-tools').scrollIntoView({behavior:'smooth', block:'start'});
+dashboardBtn.addEventListener('click',async()=>{
+  if(!salonAuth || !salonAuth.currentUser || !signedInRole) return;
+  try {
+    if(signedInRole==='owner') {
+      document.getElementById('customer-tools').hidden=false;
+      document.getElementById('customer-tools').scrollIntoView({behavior:'smooth',block:'start'});
+    } else if(signedInRole==='admin') {
+      showRoleDashboard('Super Admin Dashboard / सुपर एडमिन','सभी सैलून की स्थिति और रिकॉर्ड।');
+      await loadAdminDashboard();
+    } else {
+      showRoleDashboard('Customer Dashboard / ग्राहक डैशबोर्ड','आपकी प्रोफाइल और आपकी निजी विज़िट हिस्ट्री।');
+      await loadCustomerDashboard(salonAuth.currentUser);
+    }
+  } catch(error) {
+    console.error('Dashboard load failed:',error);
+    showRoleDashboard('Dashboard load नहीं हुआ','डेटा लोड करने में समस्या हुई। कृपया दोबारा कोशिश करें।');
+  }
 });
 
 loginBtn.addEventListener('click', async () => {
