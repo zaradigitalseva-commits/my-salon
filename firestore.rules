@@ -13,7 +13,7 @@ service cloud.firestore {
    allow delete:if isSuperAdmin();
   }
   match /salonVisits/{visitId}{
-   allow create:if signedIn() && request.resource.data.ownerUid==request.auth.uid && ownsSalon(request.resource.data.salonId) && request.resource.data.service is string && request.resource.data.service.size()>0 && request.resource.data.service.size()<=120 && request.resource.data.amount is number && request.resource.data.amount>=0 && request.resource.data.discount is number && request.resource.data.discount>=0 && request.resource.data.discount<=request.resource.data.amount && request.resource.data.paidAmount==request.resource.data.amount-request.resource.data.discount;
+   allow create:if signedIn() && request.resource.data.ownerUid==request.auth.uid && ownsSalon(request.resource.data.salonId) && request.resource.data['service'] is string && request.resource.data['service'].size()>0 && request.resource.data['service'].size()<=120 && request.resource.data.amount is number && request.resource.data.amount>=0 && request.resource.data.discount is number && request.resource.data.discount>=0 && request.resource.data.discount<=request.resource.data.amount && request.resource.data.paidAmount==request.resource.data.amount-request.resource.data.discount;
    allow read:if isSuperAdmin() || (signedIn() && resource.data.ownerUid==request.auth.uid && ownsSalon(resource.data.salonId)) || (signedIn() && exists(/databases/$(database)/documents/salonCustomers/$(resource.data.customerId)) && get(/databases/$(database)/documents/salonCustomers/$(resource.data.customerId)).data.customerUid==request.auth.uid);
    allow update,delete:if isSuperAdmin();
   }
