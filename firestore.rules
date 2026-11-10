@@ -1,28 +1,22 @@
 rules_version = '2';
-
 service cloud.firestore {
-  match /databases/{database}/documents {
-
-    function isSuperAdmin() {
-      return request.auth != null
-        && request.auth.token.email_verified == true
-        && request.auth.token.email in [
-          'ngogrant454@gmail.com',
-          'zaradigitalseva@gmail.com'
-        ];
-    }
-
-    // Public website settings and logo.
-    // Anyone can view them; only verified Super Admins can change them.
-    match /publicSettings/{documentId} {
-      allow read: if true;
-      allow create, update, delete: if isSuperAdmin();
-    }
-
-    // All other collections remain denied until their rules are
-    // deliberately added and reviewed.
-    match /{document=**} {
-      allow read, write: if false;
-    }
+ match /databases/{database}/documents {
+  function signedIn(){return request.auth != null;}
+  function isSuperAdmin(){return signedIn() && request.auth.token.email_verified == true && request.auth.token.email in ['ngogrant454@gmail.com','zaradigitalseva@gmail.com'];}
+  function ownsSalon(salonId){return signedIn() && exists(/databases/$(database)/documents/salons/$(salonId)) && get(/databases/$(database)/documents/salons/$(salonId)).data.ownerUid == request.auth.uid && get(/databases/$(database)/documents/salons/$(salonId)).data.status in ['APPROVED','LIVE','ACTIVE'];}
+  match /publicSettings/{id}{allow read:if true;allow write:if isSuperAdmin();}
+  match /salons/{salonId}{allow read:if isSuperAdmin() || (signedIn() && resource.data.ownerUid==request.auth.uid);allow create,update,delete:if isSuperAdmin();}
+  match /salonCustomers/{customerId}{
+   allow create:if signedIn() && request.resource.data.ownerUid==request.auth.uid && ownsSalon(request.resource.data.salonId) && request.resource.data.name is string && request.resource.data.name.size()>0 && request.resource.data.name.size()<=80 && request.resource.data.phone is string && request.resource.data.phone.matches('^[0-9]{10}$') && request.resource.data.customerUid==null;
+   allow read:if isSuperAdmin() || (signedIn() && resource.data.ownerUid==request.auth.uid && ownsSalon(resource.data.salonId)) || (signedIn() && resource.data.customerUid==request.auth.uid);
+   allow update:if signedIn() && resource.data.ownerUid==request.auth.uid && ownsSalon(resource.data.salonId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','updatedAt']) && request.resource.data.name is string && request.resource.data.name.size()>0 && request.resource.data.name.size()<=80;
+   allow delete:if isSuperAdmin();
   }
+  match /salonVisits/{visitId}{
+   allow create:if signedIn() && request.resource.data.ownerUid==request.auth.uid && ownsSalon(request.resource.data.salonId) && request.resource.data.service is string && request.resource.data.service.size()>0 && request.resource.data.service.size()<=120 && request.resource.data.amount is number && request.resource.data.amount>=0 && request.resource.data.discount is number && request.resource.data.discount>=0 && request.resource.data.discount<=request.resource.data.amount && request.resource.data.paidAmount==request.resource.data.amount-request.resource.data.discount;
+   allow read:if isSuperAdmin() || (signedIn() && resource.data.ownerUid==request.auth.uid && ownsSalon(resource.data.salonId)) || (signedIn() && exists(/databases/$(database)/documents/salonCustomers/$(resource.data.customerId)) && get(/databases/$(database)/documents/salonCustomers/$(resource.data.customerId)).data.customerUid==request.auth.uid);
+   allow update,delete:if isSuperAdmin();
+  }
+  match /{document=**}{allow read,write:if false;}
+ }
 }
