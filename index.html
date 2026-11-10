@@ -141,15 +141,79 @@ document.getElementById('sendBillBtn').addEventListener('click',()=>{
 try {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   salonAuth = firebase.auth();
-  salonAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(console.error);
+  salonDb = firebase.firestore();
+  // LOCAL persistence keeps the Google account signed in across reloads and browser restarts.
+  salonAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(error => {
+    console.error('MY SALON auth persistence setup failed:', error);
+  });
 } catch (error) {
   console.error('MY SALON Firebase initialization failed:', error);
 }
-if (firebase.apps.length) salonDb = firebase.firestore();
+
+async function restoreSalonSession(user) {
+  if (!user) {
+    activeSalonId = null;
+    activeSalonName = '';
+    document.getElementById('customer-tools').hidden = true;
+    loginBtn.textContent = 'Login';
+    loginBtn.title = 'Login with Google';
+    return;
+  }
+  const email = (user.email || '').toLowerCase();
+  loginBtn.textContent = 'Logout';
+  loginBtn.title = 'Signed in as ' + (user.email || '');
+  if (!user.emailVerified) {
+    document.getElementById('customer-tools').hidden = true;
+    status('Verified Google account se login karein.', true);
+    return;
+  }
+  if (SUPER_ADMINS.includes(email)) {
+    document.getElementById('customer-tools').hidden = true;
+    loginBtn.title = 'Super Admin: ' + email;
+    return;
+  }
+  try {
+    const owned = await salonDb.collection('salons')
+      .where('ownerUid', '==', user.uid)
+      .limit(10)
+      .get();
+    const approved = owned.docs.find(doc =>
+      ['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase())
+    );
+    if (!approved) {
+      activeSalonId = null;
+      activeSalonName = '';
+      document.getElementById('customer-tools').hidden = true;
+      status('Google account login hai, lekin is account se approved salon abhi link nahi hai.', true);
+      return;
+    }
+    activeSalonId = approved.id;
+    activeSalonName = approved.data().name || 'My Salon';
+    document.getElementById('customer-tools').hidden = false;
+    status('Welcome, ' + activeSalonName + ' — aap login hain.');
+  } catch (error) {
+    console.error('MY SALON session restore failed:', error);
+    status('Login yaad hai, lekin salon details load nahi hui. Firestore Rules aur salon approval check karein.', true);
+  }
+}
+
+if (salonAuth) {
+  salonAuth.onAuthStateChanged(user => {
+    restoreSalonSession(user).catch(error => console.error('Session restore error:', error));
+  });
+}
 
 loginBtn.addEventListener('click', async () => {
   if (!salonAuth) {
     alert('Login service abhi connect nahi ho pa rahi. Thodi der baad dobara koshish karein.');
+    return;
+  }
+  if (salonAuth.currentUser) {
+    try {
+      await salonAuth.signOut();
+    } catch (error) {
+      alert('Logout nahi ho saka: ' + (error.message || error.code));
+    }
     return;
   }
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -157,30 +221,9 @@ loginBtn.addEventListener('click', async () => {
   loginBtn.disabled = true;
   loginBtn.textContent = 'Please wait...';
   try {
-    const result = await salonAuth.signInWithPopup(provider);
-    const user = result.user;
-    const email = (user.email || '').toLowerCase();
-    if (!user.emailVerified) {
-      await salonAuth.signOut();
-      alert('Verified Google account se login karein.');
-      return;
-    }
-    if (SUPER_ADMINS.includes(email)) {
-      alert('Super Admin login successful: ' + email + '\nAdmin dashboard abhi setup hona baaki hai.');
-      return;
-    }
-    const owned = await salonDb.collection('salons').where('ownerUid','==',user.uid).limit(1).get();
-    const approved = owned.docs.find(doc => ['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase()));
-    if (!approved) {
-      await salonAuth.signOut();
-      alert('Is Google account se approved salon nahi juda hai. Shop Owner registration aur approval zaroori hai.');
-      return;
-    }
-    activeSalonId = approved.id;
-    activeSalonName = approved.data().name || 'My Salon';
-    document.getElementById('customer-tools').hidden = false;
-    document.getElementById('customer-tools').scrollIntoView({behavior:'smooth'});
-    loginBtn.textContent = 'Shop Owner';
+    await salonAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    await salonAuth.signInWithPopup(provider);
+    // onAuthStateChanged restores the correct dashboard and keeps the session.
   } catch (error) {
     console.error('MY SALON Google sign-in error:', error);
     const messages = {
@@ -191,7 +234,7 @@ loginBtn.addEventListener('click', async () => {
     alert(messages[error.code] || ('Google Login nahi ho saka: ' + (error.message || error.code)));
   } finally {
     loginBtn.disabled = false;
-    loginBtn.textContent = 'Login';
+    if (!salonAuth.currentUser) loginBtn.textContent = 'Login';
   }
 });
 
