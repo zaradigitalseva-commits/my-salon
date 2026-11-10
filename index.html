@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fff4fa">
+<meta name="description" content="MY SALON — Discover salons, beauty services and offers near you.">
+<title>MY SALON | Beauty • Style • Care</title>
+<style>
+:root{--pink:#ec168d;--purple:#7828c8;--gold:#e9a52d;--ink:#28172d;--muted:#786b7c;--paper:#fffafd}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#fff8fc 0%,#fff 45%,#fff8fc 100%)}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid #f7d9eb;box-shadow:0 8px 30px rgba(128,31,91,.08)}
+.nav-wrap{max-width:1240px;margin:auto;padding:8px 22px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;min-width:220px;text-decoration:none}
+.brand svg{display:block;width:230px;height:auto;max-height:82px}
+nav{display:flex;align-items:center;gap:25px;margin-left:auto}nav a{color:#39283d;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}nav a:hover{color:var(--pink)}
+.actions{display:flex;gap:10px;align-items:center}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
+.hero{max-width:1240px;margin:0 auto;padding:58px 22px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#a20d68;background:#ffe8f5;border:1px solid #ffd0e9;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(38px,5.5vw,66px);line-height:1.04;letter-spacing:-.045em;margin:18px 0 15px}h1 span{background:linear-gradient(90deg,#ed168d,#8c35d2,#e4a12a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:18px;line-height:1.7;color:var(--muted);max-width:590px;margin:0 0 25px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.outline{border:1px solid #edb5d7;background:#fff;color:#9e1768}
+.hero-art{min-height:310px;border-radius:34px;background:radial-gradient(circle at 25% 20%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffe0f0,#f2e4ff 55%,#fff0d7);display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px #fff,0 22px 55px #a7357a20}
+.hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%;border:1px solid #fff9;width:290px;height:290px}.hero-art:after{width:390px;height:390px}
+.beauty-icon{font-size:120px;z-index:1;filter:drop-shadow(0 18px 14px #a23b7c35)}.floating{position:absolute;background:#ffffffd9;backdrop-filter:blur(8px);border:1px solid white;border-radius:18px;padding:12px 16px;font-weight:800;box-shadow:0 10px 25px #7e337022}.f1{top:24px;left:22px;color:#c21a83}.f2{bottom:26px;right:20px;color:#6e2bb6}
+.section{max-width:1240px;margin:auto;padding:30px 22px 70px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.section h2{font-size:clamp(25px,3vw,36px);margin:0 0 7px}.section p{color:var(--muted);margin:0}
+.searchbar{display:flex;gap:10px;background:#fff;border:1px solid #f0d6e6;padding:8px;border-radius:18px;box-shadow:0 12px 30px #9e367a0d;max-width:760px}.searchbar input{flex:1;min-width:0;border:0;outline:0;padding:12px 14px;font-size:15px;background:transparent}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:25px}.tile{padding:23px;border:1px solid #f3ddec;border-radius:23px;background:#fff;box-shadow:0 12px 32px #803b6d0b}.tile .emoji{font-size:29px}.tile h3{margin:12px 0 6px}.tile p{font-size:14px;line-height:1.6}
+footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}footer strong{color:#ff8bc8}
+@media(max-width:850px){.nav-wrap{padding:7px 14px;gap:8px}.brand{min-width:0;flex:1}.brand svg{width:190px;max-height:68px}nav{display:none;position:absolute;top:100%;left:0;right:0;background:white;padding:18px 22px 22px;box-shadow:0 16px 25px #56204018;flex-direction:column;align-items:stretch;gap:17px}nav.open{display:flex}.actions{gap:7px}.actions .login{display:none}.btn{padding:10px 14px;font-size:13px}.menu{display:block}.hero{grid-template-columns:1fr;padding-top:38px}.hero-art{min-height:245px}.beauty-icon{font-size:92px}.tiles{grid-template-columns:1fr 1fr}.section-head{display:block}.searchbar{margin-top:18px}}
+@media(max-width:480px){.brand svg{width:158px}.actions .book{padding:9px 11px;font-size:12px}.hero{padding-left:16px;padding-right:16px}.lead{font-size:16px}.hero-art{min-height:210px}.beauty-icon{font-size:78px}.section{padding-left:16px;padding-right:16px}.tiles{gap:10px}.tile{padding:16px}.tile h3{font-size:15px}.tile p{font-size:12px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="nav-wrap">
+  <a class="brand" href="#" aria-label="MY SALON home">
+   <svg viewBox="0 0 560 220" role="img" aria-label="MY SALON colorful logo" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="m" x2="0" y2="1"><stop stop-color="#55d9ff"/><stop offset="1" stop-color="#0874db"/></linearGradient><linearGradient id="s" x2="1" y2="1"><stop stop-color="#ff45a9"/><stop offset=".5" stop-color="#ffc52e"/><stop offset="1" stop-color="#8e39e8"/></linearGradient><linearGradient id="g" x2="0" y2="1"><stop stop-color="#fff5ad"/><stop offset="1" stop-color="#d58b19"/></linearGradient></defs>
+    <path d="M18 177 Q25 24 177 17 Q245 4 292 50 Q363 8 465 44 Q544 70 538 167 Q510 210 430 197 L72 207 Q25 205 18 177Z" fill="#fff" stroke="url(#g)" stroke-width="8"/>
+    <circle cx="115" cy="78" r="57" fill="#ffe2f1" stroke="#e8a62c" stroke-width="5"/><path d="M74 94 Q77 34 120 37 Q158 42 160 94 Q145 115 119 113 Q91 113 74 94Z" fill="#43203c"/><path d="M72 77 Q78 22 127 27 Q159 32 166 70 Q143 50 125 52 Q102 56 91 84Z" fill="#21152b" stroke="#d79b36" stroke-width="5"/><path d="M97 91 Q117 103 139 90" fill="none" stroke="#ed4d9b" stroke-width="5" stroke-linecap="round"/><path d="M82 23 L96 5 L111 22 L128 2 L141 23" fill="none" stroke="url(#g)" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M179 25 L220 91 M220 25 L179 91" stroke="#d69a25" stroke-width="8" stroke-linecap="round"/><path d="M191 25 Q180 7 168 19 M208 25 Q220 7 232 19" stroke="#d69a25" stroke-width="7" fill="none"/>
+    <text x="245" y="103" font-size="78" font-weight="1000" font-family="Arial,sans-serif" fill="url(#m)" stroke="#d99a28" stroke-width="5" paint-order="stroke">MY</text>
+    <text x="55" y="176" font-size="94" font-weight="1000" letter-spacing="-5" font-family="Arial,sans-serif" fill="url(#s)" stroke="#d99a28" stroke-width="6" paint-order="stroke">SALON</text>
+    <path d="M62 190 Q270 213 500 184" fill="none" stroke="#f21a91" stroke-width="8" stroke-linecap="round"/><path d="M470 28 l7 16 17 7 -17 7 -7 17 -7 -17 -17 -7 17 -7Z" fill="#ffc52e"/><path d="M27 116 l5 12 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5Z" fill="#f21a91"/>
+    <path d="M485 120 Q510 92 529 118 Q546 142 514 162 Q484 142 485 120Z" fill="#ff5aa9" stroke="#e2a12c" stroke-width="3"/><path d="M514 121v35" stroke="#f6d34b" stroke-width="3"/>
+   </svg>
+  </a>
+  <nav id="mainNav"><a href="#">Home</a><a href="#salons">Salons</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+  <div class="actions"><a class="btn login" href="#login">Login</a><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
+ </div>
+</header>
+<main>
+ <section class="hero" id="about">
+  <div><span class="eyebrow">✦ Beauty • Style • Care</span><h1>Find your style.<br><span>Feel beautiful.</span></h1><p class="lead">Discover salons around you, explore beauty services and offers, and connect with the right salon—all in one place.</p><div class="hero-actions"><a class="btn book" href="#salons">Explore Salons</a><a class="btn outline" href="#services">Discover Services</a></div></div>
+  <div class="hero-art"><div class="floating f1">✨ Your beauty, your way</div><div class="beauty-icon">💇‍♀️</div><div class="floating f2">💖 Style starts here</div></div>
+ </section>
+ <section class="section" id="salons"><div class="section-head"><div><h2>Discover Salons</h2><p>Find a salon that matches your style.</p></div></div><div class="searchbar"><input id="salonSearch" type="search" placeholder="Search salon name, area or city..." aria-label="Search salons"><button class="btn book" id="searchBtn">Search</button></div><div class="tiles"><article class="tile"><div class="emoji">💇‍♀️</div><h3>Hair & Styling</h3><p>Haircut, styling, colouring and more.</p></article><article class="tile"><div class="emoji">💅</div><h3>Beauty & Nails</h3><p>Manicure, pedicure, nail art and care.</p></article><article class="tile"><div class="emoji">🌸</div><h3>Skin & Bridal</h3><p>Facials, skincare, makeup and bridal looks.</p></article></div></section>
+ <section class="section" id="services"><div class="section-head"><div><h2>Beauty services, all in one place</h2><p>Explore services and offers from approved salons.</p></div></div></section>
+ <section class="section" id="login"><div class="tile"><h2>Are you a salon owner?</h2><p>Register your salon and reach more customers. Owner registration and dashboard will be available in the next setup phase.</p><a class="btn book" href="#contact">Coming soon</a></div></section>
+</main>
+<footer id="contact">Made with <strong>♥</strong> for beauty businesses · <strong>MY SALON</strong></footer>
+<script>
+const nav=document.getElementById('mainNav');document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));document.getElementById('searchBtn').addEventListener('click',()=>{const q=document.getElementById('salonSearch').value.trim();if(q)alert('Salon search will be connected when salon listings are added. Search: '+q);else document.getElementById('salonSearch').focus()});
+</script>
+</body></html>
