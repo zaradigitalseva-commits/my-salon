@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 250" role="img" aria-labelledby="title desc">
+<title id="title">MY SALON</title><desc id="desc">Colorful beauty salon logo</desc>
+<defs>
+ <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff4da6"/><stop offset="1" stop-color="#c026d3"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff3a6"/><stop offset=".45" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient>
+ <linearGradient id="blue" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#2563eb"/></linearGradient>
+ <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dy="6"/><feComponentTransfer><feFuncA type="linear" slope=".25"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g filter="url(#shadow)">
+ <path d="M105 180 C40 90 115 10 220 22 C285 30 320 72 360 75" fill="none" stroke="url(#pink)" stroke-width="18" stroke-linecap="round"/>
+ <path d="M54 190 C30 155 18 118 35 88 M60 190 C78 158 90 139 112 125" fill="none" stroke="#16a34a" stroke-width="10" stroke-linecap="round"/>
+ <path d="M28 164 C-4 137 10 102 42 112 C61 119 59 147 28 164Z" fill="#fb4eae" stroke="url(#gold)" stroke-width="4"/>
+ <path d="M71 190 C45 172 53 141 83 147 C101 152 98 179 71 190Z" fill="#f472b6" stroke="url(#gold)" stroke-width="4"/>
+ <path d="M195 20 L203 4 L211 20 L229 27 L211 34 L203 51 L195 34 L178 27Z" fill="url(#gold)"/>
+ <text x="260" y="105" font-family="Arial,sans-serif" font-size="90" font-weight="900" fill="url(#blue)" stroke="url(#gold)" stroke-width="5" paint-order="stroke">MY</text>
+ <text x="160" y="205" font-family="Arial,sans-serif" font-size="112" font-weight="900" letter-spacing="-5" fill="url(#pink)" stroke="url(#gold)" stroke-width="7" paint-order="stroke">SALON</text>
+ <path d="M150 220 Q420 250 700 218" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+ <g transform="translate(590 15)" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"><circle cx="18" cy="18" r="13"/><circle cx="65" cy="18" r="13"/><path d="M29 28 L100 92 M54 28 L7 92"/></g>
+ <path d="M690 80 l8 17 18 7 -18 7 -8 18 -8-18 -18-7 18-7Z" fill="#facc15"/>
+</g></svg>
