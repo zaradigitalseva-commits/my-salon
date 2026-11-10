@@ -82,7 +82,7 @@ const firebaseConfig = {
 const SUPER_ADMINS = ['ngogrant454@gmail.com','zaradigitalseva@gmail.com'];
 let salonAuth = null;
 
-const salonDb = firebase.firestore();
+let salonDb = null;
 let activeSalonId = null, activeSalonName = '', selectedCustomer = null, currentVisits = [];
 const statusEl = document.getElementById('customerStatus');
 const phone10 = v => String(v || '').replace(/\D/g,'').slice(-10);
@@ -145,6 +145,7 @@ try {
 } catch (error) {
   console.error('MY SALON Firebase initialization failed:', error);
 }
+if (firebase.apps.length) salonDb = firebase.firestore();
 
 loginBtn.addEventListener('click', async () => {
   if (!salonAuth) {
