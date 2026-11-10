@@ -14,7 +14,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdro
 .brand{display:flex;align-items:center;min-width:220px;text-decoration:none}
 .brand img{display:block;width:230px;height:76px;object-fit:contain}
 nav{display:flex;align-items:center;gap:25px;margin-left:auto}nav a{color:#39283d;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}nav a:hover{color:var(--pink)}
-.actions{display:flex;gap:10px;align-items:center}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
+.actions{display:flex;gap:10px;align-items:center}.dashboard-icon{display:none;width:42px;height:42px;border:1px solid #f3b6d9;border-radius:50%;background:linear-gradient(135deg,#fff0f8,#f1e6ff);color:#9d176d;font-size:21px;cursor:pointer;box-shadow:0 5px 14px #a7357a20}.dashboard-icon.visible{display:inline-grid;place-items:center}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
 .hero{max-width:1240px;margin:0 auto;padding:58px 22px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;color:#a20d68;background:#ffe8f5;border:1px solid #ffd0e9;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 h1{font-size:clamp(38px,5.5vw,66px);line-height:1.04;letter-spacing:-.045em;margin:18px 0 15px}h1 span{background:linear-gradient(90deg,#ed168d,#8c35d2,#e4a12a);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -37,7 +37,7 @@ footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}foot
    <img src="/logo.svg" alt="MY SALON colorful logo" width="230" height="76">
   </a>
   <nav id="mainNav"><a href="#">Home</a><a href="#salons">Salons</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
-  <div class="actions"><button class="btn login" id="loginBtn" type="button">Login</button><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
+  <div class="actions"><button class="dashboard-icon" id="dashboardBtn" type="button" aria-label="Open Shop Owner Dashboard" title="Shop Owner Dashboard">👤</button><button class="btn login" id="loginBtn" type="button">Login</button><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
  </div>
 </header>
 <main>
@@ -155,6 +155,7 @@ async function restoreSalonSession(user) {
     activeSalonId = null;
     activeSalonName = '';
     document.getElementById('customer-tools').hidden = true;
+    document.getElementById('dashboardBtn').classList.remove('visible');
     loginBtn.textContent = 'Login';
     loginBtn.title = 'Login with Google';
     return;
@@ -169,6 +170,7 @@ async function restoreSalonSession(user) {
   }
   if (SUPER_ADMINS.includes(email)) {
     document.getElementById('customer-tools').hidden = true;
+    document.getElementById('dashboardBtn').classList.remove('visible');
     loginBtn.title = 'Super Admin: ' + email;
     return;
   }
@@ -184,13 +186,15 @@ async function restoreSalonSession(user) {
       activeSalonId = null;
       activeSalonName = '';
       document.getElementById('customer-tools').hidden = true;
+      document.getElementById('dashboardBtn').classList.remove('visible');
       status('Google account login hai, lekin is account se approved salon abhi link nahi hai.', true);
       return;
     }
     activeSalonId = approved.id;
     activeSalonName = approved.data().name || 'My Salon';
-    document.getElementById('customer-tools').hidden = false;
-    status('Welcome, ' + activeSalonName + ' — aap login hain.');
+    document.getElementById('customer-tools').hidden = true;
+    document.getElementById('dashboardBtn').classList.add('visible');
+    status('Welcome, ' + activeSalonName + ' — Dashboard icon par click karein.');
   } catch (error) {
     console.error('MY SALON session restore failed:', error);
     status('Login yaad hai, lekin salon details load nahi hui. Firestore Rules aur salon approval check karein.', true);
@@ -202,6 +206,12 @@ if (salonAuth) {
     restoreSalonSession(user).catch(error => console.error('Session restore error:', error));
   });
 }
+
+document.getElementById('dashboardBtn').addEventListener('click', () => {
+  if (!activeSalonId || !salonAuth || !salonAuth.currentUser) return;
+  document.getElementById('customer-tools').hidden = false;
+  document.getElementById('customer-tools').scrollIntoView({behavior:'smooth', block:'start'});
+});
 
 loginBtn.addEventListener('click', async () => {
   if (!salonAuth) {
