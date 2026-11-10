@@ -46,12 +46,25 @@ footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}foot
   <div class="hero-art"><div class="floating f1">✨ Your beauty, your way</div><div class="beauty-icon">💇‍♀️</div><div class="floating f2">💖 Style starts here</div></div>
  </section>
  <section class="section" id="salons"><div class="section-head"><div><h2>Discover Salons</h2><p>Find a salon that matches your style.</p></div></div><div class="searchbar"><input id="salonSearch" type="search" placeholder="Search salon name, area or city..." aria-label="Search salons"><button class="btn book" id="searchBtn">Search</button></div><div class="tiles"><article class="tile"><div class="emoji">💇‍♀️</div><h3>Hair & Styling</h3><p>Haircut, styling, colouring and more.</p></article><article class="tile"><div class="emoji">💅</div><h3>Beauty & Nails</h3><p>Manicure, pedicure, nail art and care.</p></article><article class="tile"><div class="emoji">🌸</div><h3>Skin & Bridal</h3><p>Facials, skincare, makeup and bridal looks.</p></article></div></section>
+ <section class="section" id="customer-tools" hidden>
+  <div class="tile"><span class="eyebrow">SHOP OWNER · CUSTOMER HISTORY</span>
+   <h2>Customer History / ग्राहक हिस्ट्री</h2>
+   <p>अपने सैलून के ग्राहक का मोबाइल नंबर खोजें या नया ग्राहक जोड़ें।</p>
+   <div class="searchbar"><input id="customerPhoneSearch" type="tel" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर"><button class="btn book" id="findCustomerBtn" type="button">खोजें</button></div>
+   <p id="customerStatus" role="status" aria-live="polite"></p>
+   <div id="customerCreate" hidden><h3>नया ग्राहक जोड़ें</h3><div class="searchbar"><input id="newCustomerName" type="text" maxlength="80" placeholder="ग्राहक का नाम"><button class="btn book" id="addCustomerBtn" type="button">ग्राहक सेव करें</button></div></div>
+   <div id="customerDetails" hidden><h3 id="customerNameHeading"></h3><p id="customerVisitSummary"></p><div id="customerVisitList"></div>
+    <h3>नई विज़िट / सर्विस दर्ज करें</h3><div class="searchbar"><input id="visitService" type="text" maxlength="120" placeholder="कौन-सी सर्विस की"><input id="visitAmount" type="number" min="0" step="1" placeholder="रकम ₹"></div>
+    <div class="searchbar"><input id="visitDiscount" type="number" min="0" step="1" placeholder="डिस्काउंट ₹"><button class="btn book" id="saveVisitBtn" type="button">विज़िट सेव करें</button></div>
+    <button class="btn outline" id="sendBillBtn" type="button">WhatsApp पर बिल भेजें</button></div></div>
+ </section>
  <section class="section" id="services"><div class="section-head"><div><h2>Beauty services, all in one place</h2><p>Explore services and offers from approved salons.</p></div></div></section>
  <section class="section" id="login"><div class="tile"><h2>Are you a salon owner?</h2><p>Register your salon and reach more customers. Owner registration and dashboard will be available in the next setup phase.</p><a class="btn book" href="#contact">Coming soon</a></div></section>
 </main>
 <footer id="contact">Made with <strong>♥</strong> for beauty businesses · <strong>MY SALON</strong></footer>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
 const nav=document.getElementById('mainNav');
 const loginBtn=document.getElementById('loginBtn');
@@ -68,6 +81,62 @@ const firebaseConfig = {
 };
 const SUPER_ADMINS = ['ngogrant454@gmail.com','zaradigitalseva@gmail.com'];
 let salonAuth = null;
+
+const salonDb = firebase.firestore();
+let activeSalonId = null, activeSalonName = '', selectedCustomer = null, currentVisits = [];
+const statusEl = document.getElementById('customerStatus');
+const phone10 = v => String(v || '').replace(/\D/g,'').slice(-10);
+const inr = v => '₹' + Number(v || 0).toLocaleString('en-IN');
+function status(msg, bad=false){statusEl.textContent=msg;statusEl.style.color=bad?'#b42318':'#287a45';}
+function ownerRequired(){if(!activeSalonId || !salonAuth.currentUser) throw new Error('Approved Shop Owner login required.');}
+async function showCustomer(doc){
+ selectedCustomer={id:doc.id,...doc.data()};
+ document.getElementById('customerCreate').hidden=true;
+ document.getElementById('customerDetails').hidden=false;
+ document.getElementById('customerNameHeading').textContent=selectedCustomer.name+' · '+selectedCustomer.phone;
+ const snap=await salonDb.collection('salonVisits').where('salonId','==',activeSalonId).where('customerId','==',doc.id).orderBy('createdAt','desc').limit(100).get();
+ currentVisits=snap.docs.map(d=>({id:d.id,...d.data()}));
+ const sum=currentVisits.reduce((a,v)=>a+Number(v.amount||0),0);
+ const discounts=currentVisits.reduce((a,v)=>a+Number(v.discount||0),0);
+ document.getElementById('customerVisitSummary').textContent='कुल विज़िट: '+currentVisits.length+' · कुल खर्च: '+inr(sum)+' · कुल डिस्काउंट: '+inr(discounts);
+ const list=document.getElementById('customerVisitList'); list.replaceChildren();
+ currentVisits.forEach(v=>{
+  const card=document.createElement('article');card.className='tile';
+  const date=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleString('hi-IN'):'तारीख उपलब्ध नहीं';
+  const p=document.createElement('p');p.textContent=date+' · '+v.service+' · रकम '+inr(v.amount)+' · डिस्काउंट '+inr(v.discount)+' · भुगतान '+inr(v.paidAmount);
+  card.appendChild(p);list.appendChild(card);
+ });
+}
+document.getElementById('findCustomerBtn').addEventListener('click',async()=>{
+ try{ownerRequired();const phone=phone10(document.getElementById('customerPhoneSearch').value);if(phone.length!==10)throw new Error('10 अंकों का सही मोबाइल नंबर डालें।');
+ status('खोज रहे हैं...');const q=await salonDb.collection('salonCustomers').where('salonId','==',activeSalonId).where('phone','==',phone).limit(1).get();
+ if(q.empty){selectedCustomer=null;document.getElementById('customerDetails').hidden=true;document.getElementById('customerCreate').hidden=false;status('ग्राहक नहीं मिला। नया रिकॉर्ड बना सकते हैं।');}
+ else{await showCustomer(q.docs[0]);status('ग्राहक मिल गया।');}
+ }catch(e){console.error(e);status(e.message||'खोज में समस्या हुई।',true);}
+});
+document.getElementById('addCustomerBtn').addEventListener('click',async()=>{
+ try{ownerRequired();const phone=phone10(document.getElementById('customerPhoneSearch').value),name=document.getElementById('newCustomerName').value.trim();if(phone.length!==10||!name)throw new Error('ग्राहक का नाम और सही मोबाइल नंबर डालें।');
+ const q=await salonDb.collection('salonCustomers').where('salonId','==',activeSalonId).where('phone','==',phone).limit(1).get();if(!q.empty){await showCustomer(q.docs[0]);return;}
+ const ref=await salonDb.collection('salonCustomers').add({salonId:activeSalonId,ownerUid:salonAuth.currentUser.uid,name,phone,customerUid:null,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+ await showCustomer(await ref.get());status('ग्राहक रिकॉर्ड सेव हो गया।');
+ }catch(e){console.error(e);status(e.message||'ग्राहक सेव नहीं हुआ।',true);}
+});
+document.getElementById('saveVisitBtn').addEventListener('click',async()=>{
+ try{ownerRequired();if(!selectedCustomer)throw new Error('पहले ग्राहक खोजें।');const service=document.getElementById('visitService').value.trim(),amount=Number(document.getElementById('visitAmount').value),discount=Number(document.getElementById('visitDiscount').value||0);
+ if(!service||!Number.isFinite(amount)||amount<0||!Number.isFinite(discount)||discount<0||discount>amount)throw new Error('सर्विस, सही रकम और सही डिस्काउंट डालें।');
+ await salonDb.collection('salonVisits').add({salonId:activeSalonId,ownerUid:salonAuth.currentUser.uid,customerId:selectedCustomer.id,customerPhone:selectedCustomer.phone,customerName:selectedCustomer.name,service,amount,discount,paidAmount:amount-discount,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+ document.getElementById('visitService').value='';document.getElementById('visitAmount').value='';document.getElementById('visitDiscount').value='';
+ await showCustomer(await salonDb.collection('salonCustomers').doc(selectedCustomer.id).get());status('विज़िट और भुगतान सेव हो गए।');
+ }catch(e){console.error(e);status(e.message||'विज़िट सेव नहीं हुई।',true);}
+});
+document.getElementById('sendBillBtn').addEventListener('click',()=>{
+ if(!selectedCustomer||!currentVisits.length)return status('पहले ग्राहक की विज़िट सेव करें।',true);
+ const v=currentVisits[0],date=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleString('en-IN'):'Date unavailable';
+ const lines=['MY SALON · '+activeSalonName,'Customer: '+selectedCustomer.name,'Mobile: '+selectedCustomer.phone,'Date: '+date,'Service: '+v.service,'Amount: '+inr(v.amount),'Discount: '+inr(v.discount),'Paid: '+inr(v.paidAmount),'Thank you for visiting!'];
+ const url='https://wa.me/91'+selectedCustomer.phone+'?text='+encodeURIComponent(lines.join('\n'));
+ window.open(url,'_blank','noopener,noreferrer');
+});
+
 
 try {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -90,12 +159,27 @@ loginBtn.addEventListener('click', async () => {
     const result = await salonAuth.signInWithPopup(provider);
     const user = result.user;
     const email = (user.email || '').toLowerCase();
-    if (!user.emailVerified || !SUPER_ADMINS.includes(email)) {
+    if (!user.emailVerified) {
       await salonAuth.signOut();
-      alert('Is Google account ko MY SALON Super Admin ki permission nahi hai.');
+      alert('Verified Google account se login karein.');
       return;
     }
-    alert('Super Admin login successful: ' + email + '\nAdmin dashboard agle setup step mein khulega.');
+    if (SUPER_ADMINS.includes(email)) {
+      alert('Super Admin login successful: ' + email + '\nAdmin dashboard abhi setup hona baaki hai.');
+      return;
+    }
+    const owned = await salonDb.collection('salons').where('ownerUid','==',user.uid).limit(1).get();
+    const approved = owned.docs.find(doc => ['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase()));
+    if (!approved) {
+      await salonAuth.signOut();
+      alert('Is Google account se approved salon nahi juda hai. Shop Owner registration aur approval zaroori hai.');
+      return;
+    }
+    activeSalonId = approved.id;
+    activeSalonName = approved.data().name || 'My Salon';
+    document.getElementById('customer-tools').hidden = false;
+    document.getElementById('customer-tools').scrollIntoView({behavior:'smooth'});
+    loginBtn.textContent = 'Shop Owner';
   } catch (error) {
     console.error('MY SALON Google sign-in error:', error);
     const messages = {
