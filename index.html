@@ -37,7 +37,7 @@ footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}foot
    <img src="/logo.svg" alt="MY SALON colorful logo" width="230" height="76">
   </a>
   <nav id="mainNav"><a href="#">Home</a><a href="#salons">Salons</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
-  <div class="actions"><a class="btn login" href="#login">Login</a><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
+  <div class="actions"><button class="btn login" id="loginBtn" type="button">Login</button><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
  </div>
 </header>
 <main>
@@ -51,6 +51,16 @@ footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}foot
 </main>
 <footer id="contact">Made with <strong>♥</strong> for beauty businesses · <strong>MY SALON</strong></footer>
 <script>
-const nav=document.getElementById('mainNav');document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));document.getElementById('searchBtn').addEventListener('click',()=>{const q=document.getElementById('salonSearch').value.trim();if(q)alert('Salon search will be connected when salon listings are added. Search: '+q);else document.getElementById('salonSearch').focus()});
+const nav=document.getElementById('mainNav');
+document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+document.getElementById('loginBtn').addEventListener('click',()=>{
+  alert('MY SALON Google Login is being connected. Please try again after the login setup is complete.');
+});
+document.getElementById('searchBtn').addEventListener('click',()=>{
+  const q=document.getElementById('salonSearch').value.trim();
+  if(q)alert('Salon search will be connected when salon listings are added. Search: '+q);
+  else document.getElementById('salonSearch').focus();
+});
 </script>
 </body></html>
