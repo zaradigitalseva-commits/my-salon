@@ -1,330 +1,53 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#fff4fa">
-<meta name="description" content="MY SALON — Discover salons, beauty services and offers near you.">
-<title>MY SALON | Beauty • Style • Care</title>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff4fa"><meta name="description" content="MY SALON — salons, beauty services, appointments and offers."><title>MY SALON | Beauty • Style • Care</title>
 <style>
-:root{--pink:#ec168d;--purple:#7828c8;--gold:#e9a52d;--ink:#28172d;--muted:#786b7c;--paper:#fffafd}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#fff8fc 0%,#fff 45%,#fff8fc 100%)}
-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid #f7d9eb;box-shadow:0 8px 30px rgba(128,31,91,.08)}
-.nav-wrap{max-width:1240px;margin:auto;padding:8px 22px;display:flex;align-items:center;gap:20px}
-.brand{display:flex;align-items:center;min-width:220px;text-decoration:none}
-.brand img{display:block;width:230px;height:76px;object-fit:contain}
-nav{display:flex;align-items:center;gap:25px;margin-left:auto}nav a{color:#39283d;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}nav a:hover{color:var(--pink)}
-.actions{display:flex;gap:10px;align-items:center}.dashboard-icon{display:none;width:42px;height:42px;border:1px solid #f3b6d9;border-radius:50%;background:linear-gradient(135deg,#fff0f8,#f1e6ff);color:#9d176d;font-size:21px;cursor:pointer;box-shadow:0 5px 14px #a7357a20}.dashboard-icon.visible{display:inline-grid;place-items:center}.role-dashboard-section{scroll-margin-top:100px}#roleDashboardContent .tile{margin-top:14px}.btn{border:0;border-radius:999px;padding:12px 19px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #e62c9840}.login{background:#fff0f8;color:#b70b70;border:1px solid #f6b9dc}.book{color:white;background:linear-gradient(120deg,#f01691,#8c35d2);box-shadow:0 7px 18px #c52a9140}.menu{display:none;background:#fff0f8;border:1px solid #f4c5df;border-radius:12px;padding:9px;color:#9b176b;font-size:22px}
-.hero{max-width:1240px;margin:0 auto;padding:58px 22px 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#a20d68;background:#ffe8f5;border:1px solid #ffd0e9;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-h1{font-size:clamp(38px,5.5vw,66px);line-height:1.04;letter-spacing:-.045em;margin:18px 0 15px}h1 span{background:linear-gradient(90deg,#ed168d,#8c35d2,#e4a12a);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:18px;line-height:1.7;color:var(--muted);max-width:590px;margin:0 0 25px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.outline{border:1px solid #edb5d7;background:#fff;color:#9e1768}
-.hero-art{min-height:310px;border-radius:34px;background:radial-gradient(circle at 25% 20%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffe0f0,#f2e4ff 55%,#fff0d7);display:grid;place-items:center;position:relative;overflow:hidden;box-shadow:inset 0 0 0 1px #fff,0 22px 55px #a7357a20}
-.hero-art:before,.hero-art:after{content:"";position:absolute;border-radius:50%;border:1px solid #fff9;width:290px;height:290px}.hero-art:after{width:390px;height:390px}
-.beauty-icon{font-size:120px;z-index:1;filter:drop-shadow(0 18px 14px #a23b7c35)}.floating{position:absolute;background:#ffffffd9;backdrop-filter:blur(8px);border:1px solid white;border-radius:18px;padding:12px 16px;font-weight:800;box-shadow:0 10px 25px #7e337022}.f1{top:24px;left:22px;color:#c21a83}.f2{bottom:26px;right:20px;color:#6e2bb6}
-.section{max-width:1240px;margin:auto;padding:30px 22px 70px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}.section h2{font-size:clamp(25px,3vw,36px);margin:0 0 7px}.section p{color:var(--muted);margin:0}
-.searchbar{display:flex;gap:10px;background:#fff;border:1px solid #f0d6e6;padding:8px;border-radius:18px;box-shadow:0 12px 30px #9e367a0d;max-width:760px}.searchbar input{flex:1;min-width:0;border:0;outline:0;padding:12px 14px;font-size:15px;background:transparent}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:25px}.tile{padding:23px;border:1px solid #f3ddec;border-radius:23px;background:#fff;box-shadow:0 12px 32px #803b6d0b}.tile .emoji{font-size:29px}.tile h3{margin:12px 0 6px}.tile p{font-size:14px;line-height:1.6}
-footer{background:#2d1930;color:#fbeaf4;padding:28px 22px;text-align:center}footer strong{color:#ff8bc8}
-@media(max-width:850px){.nav-wrap{padding:7px 14px;gap:8px}.brand{min-width:0;flex:1}.brand img{width:190px;height:64px}nav{display:none;position:absolute;top:100%;left:0;right:0;background:white;padding:18px 22px 22px;box-shadow:0 16px 25px #56204018;flex-direction:column;align-items:stretch;gap:17px}nav.open{display:flex}.actions{gap:7px}.actions .login{display:none}.btn{padding:10px 14px;font-size:13px}.menu{display:block}.hero{grid-template-columns:1fr;padding-top:38px}.hero-art{min-height:245px}.beauty-icon{font-size:92px}.tiles{grid-template-columns:1fr 1fr}.section-head{display:block}.searchbar{margin-top:18px}}
-@media(max-width:480px){.brand img{width:158px;height:54px}.actions .book{padding:9px 11px;font-size:12px}.hero{padding-left:16px;padding-right:16px}.lead{font-size:16px}.hero-art{min-height:210px}.beauty-icon{font-size:78px}.section{padding-left:16px;padding-right:16px}.tiles{gap:10px}.tile{padding:16px}.tile h3{font-size:15px}.tile p{font-size:12px}}
-</style>
-</head>
-<body>
-<header>
- <div class="nav-wrap">
-  <a class="brand" href="#" aria-label="MY SALON home">
-   <img src="/logo.svg" alt="MY SALON colorful logo" width="230" height="76">
-  </a>
-  <nav id="mainNav"><a href="#">Home</a><a href="#salons">Salons</a><a href="#services">Services</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
-  <div class="actions"><button class="dashboard-icon" id="dashboardBtn" type="button" aria-label="Open Shop Owner Dashboard" title="Shop Owner Dashboard">👤</button><button class="btn login" id="loginBtn" type="button">Login</button><a class="btn book" href="#salons">Explore Salons</a><button class="menu" id="menuBtn" aria-label="Open menu">☰</button></div>
- </div>
-</header>
-<main>
- <section class="hero" id="about">
-  <div><span class="eyebrow">✦ Beauty • Style • Care</span><h1>Find your style.<br><span>Feel beautiful.</span></h1><p class="lead">Discover salons around you, explore beauty services and offers, and connect with the right salon—all in one place.</p><div class="hero-actions"><a class="btn book" href="#salons">Explore Salons</a><a class="btn outline" href="#services">Discover Services</a></div></div>
-  <div class="hero-art"><div class="floating f1">✨ Your beauty, your way</div><div class="beauty-icon">💇‍♀️</div><div class="floating f2">💖 Style starts here</div></div>
- </section>
- <section class="section" id="salons"><div class="section-head"><div><h2>Discover Salons</h2><p>Find a salon that matches your style.</p></div></div><div class="searchbar"><input id="salonSearch" type="search" placeholder="Search salon name, area or city..." aria-label="Search salons"><button class="btn book" id="searchBtn">Search</button></div><div class="tiles"><article class="tile"><div class="emoji">💇‍♀️</div><h3>Hair & Styling</h3><p>Haircut, styling, colouring and more.</p></article><article class="tile"><div class="emoji">💅</div><h3>Beauty & Nails</h3><p>Manicure, pedicure, nail art and care.</p></article><article class="tile"><div class="emoji">🌸</div><h3>Skin & Bridal</h3><p>Facials, skincare, makeup and bridal looks.</p></article></div></section>
- <section class="section" id="customer-tools" hidden>
-  <div class="tile"><span class="eyebrow">SHOP OWNER · CUSTOMER HISTORY</span>
-   <h2>Customer History / ग्राहक हिस्ट्री</h2>
-   <p>अपने सैलून के ग्राहक का मोबाइल नंबर खोजें या नया ग्राहक जोड़ें।</p>
-   <div class="searchbar"><input id="customerPhoneSearch" type="tel" inputmode="numeric" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर"><button class="btn book" id="findCustomerBtn" type="button">खोजें</button></div>
-   <p id="customerStatus" role="status" aria-live="polite"></p>
-   <div id="customerCreate" hidden><h3>नया ग्राहक जोड़ें</h3><div class="searchbar"><input id="newCustomerName" type="text" maxlength="80" placeholder="ग्राहक का नाम"><button class="btn book" id="addCustomerBtn" type="button">ग्राहक सेव करें</button></div></div>
-   <div id="customerDetails" hidden><h3 id="customerNameHeading"></h3><p id="customerVisitSummary"></p><div id="customerVisitList"></div>
-    <h3>नई विज़िट / सर्विस दर्ज करें</h3><div class="searchbar"><input id="visitService" type="text" maxlength="120" placeholder="कौन-सी सर्विस की"><input id="visitAmount" type="number" min="0" step="1" placeholder="रकम ₹"></div>
-    <div class="searchbar"><input id="visitDiscount" type="number" min="0" step="1" placeholder="डिस्काउंट ₹"><button class="btn book" id="saveVisitBtn" type="button">विज़िट सेव करें</button></div>
-    <button class="btn outline" id="sendBillBtn" type="button">WhatsApp पर बिल भेजें</button></div></div>
- </section>
- <section class="section" id="role-dashboard" hidden>
-  <div class="tile">
-   <span class="eyebrow" id="roleDashboardLabel">MY SALON DASHBOARD</span>
-   <h2 id="roleDashboardTitle">Dashboard</h2>
-   <p id="roleDashboardIntro"></p>
-   <div id="roleDashboardContent"></div>
-  </div>
- </section>
- <section class="section" id="services"><div class="section-head"><div><h2>Beauty services, all in one place</h2><p>Explore services and offers from approved salons.</p></div></div></section>
- <section class="section" id="login"><div class="tile"><h2>Are you a salon owner?</h2><p>Register your salon and reach more customers. Owner registration and dashboard will be available in the next setup phase.</p><a class="btn book" href="#contact">Coming soon</a></div></section>
-</main>
-<footer id="contact">Made with <strong>♥</strong> for beauty businesses · <strong>MY SALON</strong></footer>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+:root{--p:#e9168c;--v:#7828c8;--g:#d99a27;--ink:#29172d;--muted:#786b7c;--line:#f1d7e7;--bg:#fff8fc}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;color:var(--ink);background:linear-gradient(180deg,#fff7fb,#fff 55%,#fff8fc)}header{position:sticky;top:0;z-index:9;background:#ffffffed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav{max-width:1200px;margin:auto;padding:10px 18px;display:flex;align-items:center;gap:14px}.brand img{width:180px;height:58px;object-fit:contain}.navlinks{margin-left:auto;display:flex;gap:18px}.nav a{color:var(--ink);text-decoration:none;font-weight:750}.wrap{max-width:1200px;margin:auto;padding:25px 18px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding-top:42px;padding-bottom:35px}.art,.panel,.card{background:white;border:1px solid var(--line);border-radius:24px;box-shadow:0 12px 35px #813b6c0c}.art{min-height:260px;display:grid;place-items:center;background:linear-gradient(135deg,#ffe0f0,#f2e4ff 60%,#fff0d7);font-size:100px}.eyebrow{color:#a20d68;background:#ffe8f5;border:1px solid #ffd0e9;border-radius:30px;padding:7px 12px;font-size:12px;font-weight:900}h1{font-size:clamp(36px,5vw,62px);line-height:1.05;margin:18px 0}h1 span{background:linear-gradient(90deg,var(--p),var(--v),var(--g));color:transparent;background-clip:text}.muted{color:var(--muted);line-height:1.6}.btn{border:0;border-radius:30px;padding:11px 16px;background:linear-gradient(120deg,var(--p),var(--v));color:white;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;justify-content:center;align-items:center}.btn.alt{background:#fff0f8;color:#a20d68;border:1px solid #f2bddb}.btn:disabled{opacity:.55;cursor:not-allowed}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card,.panel{padding:18px}.card img{width:100%;height:150px;object-fit:contain;background:#fff7fb;border-radius:15px}.card h3{margin:10px 0 5px}.section-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:12px 0 18px}.section-title h2{margin:0}.field{display:grid;gap:6px;margin:10px 0}.field label{font-size:13px;font-weight:800}.field input,.field textarea,.field select,input,textarea,select{width:100%;padding:12px;border:1px solid #e8d5e2;border-radius:12px;font:inherit;background:white;color:var(--ink)}textarea{min-height:75px}.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:22px;font-weight:750;color:#7d2860;cursor:pointer}.tabs button.active{background:#ffe8f5;border-color:#edacd1}.status{padding:10px;border-radius:12px;background:#fff3f8;color:#8d225d;margin:10px 0}.small{font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}footer{text-align:center;background:#2d1930;color:#fbeaf4;padding:25px}.badge{font-size:11px;font-weight:900;padding:5px 9px;border-radius:20px;background:#fff0d9;color:#8b5a00}.list{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff}.item h4{margin:0 0 6px}.item p{margin:4px 0}.item .actions>*{flex:initial}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.navlinks{display:none}.brand{flex:1}.brand img{width:150px;height:50px}.wrap{padding:20px 13px}.art{min-height:190px;font-size:78px}}@media(max-width:460px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:11px}.card img{height:105px}.card h3{font-size:14px}.card p{font-size:12px}.btn{font-size:12px;padding:10px 12px}}
+</style></head><body>
+<header><div class="nav"><a class="brand" href="#"><img src="/logo.svg" alt="MY SALON"></a><nav class="navlinks"><a href="#salons">Salons</a><a href="#services">Services</a><a href="#register">Register</a></nav><button id="login" class="btn alt">Google Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
+<main><section class="wrap hero"><div><span class="eyebrow">✦ BEAUTY · STYLE · CARE</span><h1>Find your style.<br><span>Feel beautiful.</span></h1><p class="muted">अपने आसपास सैलून खोजें, सर्विस और कीमतें देखें, अपॉइंटमेंट बुक करें और अपने पसंदीदा सैलून से जुड़ें।</p><div class="row"><a class="btn" href="#salons">Explore Salons</a><a class="btn alt" href="#register">Register Your Salon</a></div></div><div class="art">💇🏻‍♀️</div></section>
+<section class="wrap" id="salons"><div class="section-title"><div><h2>Discover Salons / सैलून खोजें</h2><p class="muted">Approved और active salons</p></div></div><div class="row"><input id="search" placeholder="Salon, area, city या state खोजें"><button id="searchBtn" class="btn">Search</button></div><div id="salonList" class="grid" style="margin-top:18px"></div></section>
+<section class="wrap" id="services"><div class="section-title"><div><h2>Beauty Services</h2><p class="muted">Hair · Skin · Bridal · Nails</p></div></div><div class="grid"><article class="card">💇‍♀️<h3>Hair & Styling</h3><p class="muted">Haircut, styling, colouring</p></article><article class="card">💅<h3>Beauty & Nails</h3><p class="muted">Manicure, pedicure, nail art</p></article><article class="card">🌸<h3>Skin & Bridal</h3><p class="muted">Facial, skincare, makeup</p></article></div></section>
+<section class="wrap" id="register"><div class="panel"><h2>Register Your Salon / अपना सैलून रजिस्टर करें</h2><p class="muted">फॉर्म जमा होने के बाद Super Admin भुगतान और जानकारी जाँचकर salon को LIVE करेगा। रजिस्ट्रेशन में सर्विस/कीमतें नहीं भरनी हैं।</p><div id="registerStatus" class="status hidden"></div><form id="registerForm"><div class="grid"><div class="field"><label>Salon Name *</label><input name="name" required maxlength="100"></div><div class="field"><label>Owner Name *</label><input name="ownerName" required maxlength="80"></div><div class="field"><label>Mobile *</label><input name="phone" required inputmode="numeric" pattern="[0-9]{10}" maxlength="10"></div><div class="field"><label>Area *</label><input name="area" required maxlength="100"></div><div class="field"><label>City *</label><input name="city" required maxlength="80"></div><div class="field"><label>State *</label><input name="state" required maxlength="80"></div><div class="field"><label>Salon Photo URL</label><input name="imageUrl" type="url" placeholder="https://..."></div><div class="field"><label>Address</label><input name="address" maxlength="200"></div></div><button class="btn">Submit Registration</button></form></div></section>
+<section class="wrap hidden" id="dashboard"><div class="section-title"><div><span class="eyebrow" id="roleTag">DASHBOARD</span><h2 id="dashTitle">Dashboard</h2><p class="muted" id="dashIntro"></p></div><button class="btn alt" id="closeDash">Close</button></div><div id="dashStatus" class="status hidden"></div><div id="dashBody"></div></section>
+<section class="wrap" id="salonDetail" hidden><button id="backSalons" class="btn alt">← Back</button><div id="detailBody" style="margin-top:15px"></div></section>
+</main><footer>Made with ♥ for beauty businesses · MY SALON</footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 <script>
-const nav=document.getElementById('mainNav');
-const loginBtn=document.getElementById('loginBtn');
-document.getElementById('menuBtn').addEventListener('click',()=>nav.classList.toggle('open'));
-nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD-FImEhSnsYKRqq7NjHbYJQB04KLhOvIE",
-  authDomain: "my-salon-b71b1.firebaseapp.com",
-  projectId: "my-salon-b71b1",
-  storageBucket: "my-salon-b71b1.firebasestorage.app",
-  messagingSenderId: "497426584536",
-  appId: "1:497426584536:web:c4695aa1caaa5988b318ad"
-};
-const SUPER_ADMINS = ['ngogrant454@gmail.com','zaradigitalseva@gmail.com'];
-let salonAuth = null;
-
-let salonDb = null;
-let activeSalonId = null, activeSalonName = '', selectedCustomer = null, currentVisits = [];
-const statusEl = document.getElementById('customerStatus');
-const phone10 = v => String(v || '').replace(/\D/g,'').slice(-10);
-const inr = v => '₹' + Number(v || 0).toLocaleString('en-IN');
-function status(msg, bad=false){statusEl.textContent=msg;statusEl.style.color=bad?'#b42318':'#287a45';}
-function ownerRequired(){if(!activeSalonId || !salonAuth.currentUser) throw new Error('Approved Shop Owner login required.');}
-async function showCustomer(doc){
- selectedCustomer={id:doc.id,...doc.data()};
- document.getElementById('customerCreate').hidden=true;
- document.getElementById('customerDetails').hidden=false;
- document.getElementById('customerNameHeading').textContent=selectedCustomer.name+' · '+selectedCustomer.phone;
- const snap=await salonDb.collection('salonVisits').where('salonId','==',activeSalonId).where('customerId','==',doc.id).orderBy('createdAt','desc').limit(100).get();
- currentVisits=snap.docs.map(d=>({id:d.id,...d.data()}));
- const sum=currentVisits.reduce((a,v)=>a+Number(v.amount||0),0);
- const discounts=currentVisits.reduce((a,v)=>a+Number(v.discount||0),0);
- document.getElementById('customerVisitSummary').textContent='कुल विज़िट: '+currentVisits.length+' · कुल खर्च: '+inr(sum)+' · कुल डिस्काउंट: '+inr(discounts);
- const list=document.getElementById('customerVisitList'); list.replaceChildren();
- currentVisits.forEach(v=>{
-  const card=document.createElement('article');card.className='tile';
-  const date=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleString('hi-IN'):'तारीख उपलब्ध नहीं';
-  const p=document.createElement('p');p.textContent=date+' · '+v.service+' · रकम '+inr(v.amount)+' · डिस्काउंट '+inr(v.discount)+' · भुगतान '+inr(v.paidAmount);
-  card.appendChild(p);list.appendChild(card);
- });
-}
-document.getElementById('findCustomerBtn').addEventListener('click',async()=>{
- try{ownerRequired();const phone=phone10(document.getElementById('customerPhoneSearch').value);if(phone.length!==10)throw new Error('10 अंकों का सही मोबाइल नंबर डालें।');
- status('खोज रहे हैं...');const q=await salonDb.collection('salonCustomers').where('salonId','==',activeSalonId).where('phone','==',phone).limit(1).get();
- if(q.empty){selectedCustomer=null;document.getElementById('customerDetails').hidden=true;document.getElementById('customerCreate').hidden=false;status('ग्राहक नहीं मिला। नया रिकॉर्ड बना सकते हैं।');}
- else{await showCustomer(q.docs[0]);status('ग्राहक मिल गया।');}
- }catch(e){console.error(e);status(e.message||'खोज में समस्या हुई।',true);}
-});
-document.getElementById('addCustomerBtn').addEventListener('click',async()=>{
- try{ownerRequired();const phone=phone10(document.getElementById('customerPhoneSearch').value),name=document.getElementById('newCustomerName').value.trim();if(phone.length!==10||!name)throw new Error('ग्राहक का नाम और सही मोबाइल नंबर डालें।');
- const q=await salonDb.collection('salonCustomers').where('salonId','==',activeSalonId).where('phone','==',phone).limit(1).get();if(!q.empty){await showCustomer(q.docs[0]);return;}
- const ref=await salonDb.collection('salonCustomers').add({salonId:activeSalonId,ownerUid:salonAuth.currentUser.uid,name,phone,customerUid:null,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
- await showCustomer(await ref.get());status('ग्राहक रिकॉर्ड सेव हो गया।');
- }catch(e){console.error(e);status(e.message||'ग्राहक सेव नहीं हुआ।',true);}
-});
-document.getElementById('saveVisitBtn').addEventListener('click',async()=>{
- try{ownerRequired();if(!selectedCustomer)throw new Error('पहले ग्राहक खोजें।');const service=document.getElementById('visitService').value.trim(),amount=Number(document.getElementById('visitAmount').value),discount=Number(document.getElementById('visitDiscount').value||0);
- if(!service||!Number.isFinite(amount)||amount<0||!Number.isFinite(discount)||discount<0||discount>amount)throw new Error('सर्विस, सही रकम और सही डिस्काउंट डालें।');
- await salonDb.collection('salonVisits').add({salonId:activeSalonId,ownerUid:salonAuth.currentUser.uid,customerId:selectedCustomer.id,customerPhone:selectedCustomer.phone,customerName:selectedCustomer.name,service,amount,discount,paidAmount:amount-discount,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
- document.getElementById('visitService').value='';document.getElementById('visitAmount').value='';document.getElementById('visitDiscount').value='';
- await showCustomer(await salonDb.collection('salonCustomers').doc(selectedCustomer.id).get());status('विज़िट और भुगतान सेव हो गए।');
- }catch(e){console.error(e);status(e.message||'विज़िट सेव नहीं हुई।',true);}
-});
-document.getElementById('sendBillBtn').addEventListener('click',()=>{
- if(!selectedCustomer||!currentVisits.length)return status('पहले ग्राहक की विज़िट सेव करें।',true);
- const v=currentVisits[0],date=v.createdAt&&v.createdAt.toDate?v.createdAt.toDate().toLocaleString('en-IN'):'Date unavailable';
- const lines=['MY SALON · '+activeSalonName,'Customer: '+selectedCustomer.name,'Mobile: '+selectedCustomer.phone,'Date: '+date,'Service: '+v.service,'Amount: '+inr(v.amount),'Discount: '+inr(v.discount),'Paid: '+inr(v.paidAmount),'Thank you for visiting!'];
- const url='https://wa.me/91'+selectedCustomer.phone+'?text='+encodeURIComponent(lines.join('\n'));
- window.open(url,'_blank','noopener,noreferrer');
-});
-
-
-try {
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  salonAuth = firebase.auth();
-  salonDb = firebase.firestore();
-  // LOCAL persistence keeps the Google account signed in across reloads and browser restarts.
-  salonAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(error => {
-    console.error('MY SALON auth persistence setup failed:', error);
-  });
-} catch (error) {
-  console.error('MY SALON Firebase initialization failed:', error);
-}
-
-let signedInRole = null;
-const dashboardBtn = document.getElementById('dashboardBtn');
-const roleDashboard = document.getElementById('role-dashboard');
-
-function setRoleIcon(role) {
-  signedInRole = role;
-  const icons = {owner:'🏪', customer:'👤', admin:'🛡️'};
-  const labels = {owner:'Shop Owner Dashboard', customer:'Customer Dashboard', admin:'Super Admin Dashboard'};
-  dashboardBtn.textContent = icons[role] || '👤';
-  dashboardBtn.title = labels[role] || 'Dashboard';
-  dashboardBtn.setAttribute('aria-label', labels[role] || 'Dashboard');
-  dashboardBtn.classList.toggle('visible', !!role);
-}
-
-function showRoleDashboard(title, intro, html='') {
-  document.getElementById('roleDashboardTitle').textContent = title;
-  document.getElementById('roleDashboardIntro').textContent = intro;
-  const content = document.getElementById('roleDashboardContent');
-  content.replaceChildren();
-  if (html) content.innerHTML = html;
-  roleDashboard.hidden = false;
-  roleDashboard.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-async function loadAdminDashboard() {
-  const snap = await salonDb.collection('salons').limit(100).get();
-  const content = document.getElementById('roleDashboardContent');
-  content.replaceChildren();
-  const summary = document.createElement('p');
-  summary.textContent = 'कुल सैलून रिकॉर्ड: ' + snap.size;
-  content.appendChild(summary);
-  snap.docs.forEach(doc => {
-    const d=doc.data(), card=document.createElement('article');
-    card.className='tile';
-    const h=document.createElement('h3'); h.textContent=d.name || 'Salon';
-    const p=document.createElement('p'); p.textContent='Status: '+String(d.status || 'PENDING')+' · '+String(d.city || d.area || '');
-    card.append(h,p); content.appendChild(card);
-  });
-  if (!snap.size) content.textContent='अभी कोई सैलून रिकॉर्ड उपलब्ध नहीं है।';
-}
-
-async function loadCustomerDashboard(user) {
-  const content = document.getElementById('roleDashboardContent');
-  content.replaceChildren();
-  const note=document.createElement('p');
-  note.textContent='आपका Google अकाउंट लॉगिन है। आपकी विज़िट हिस्ट्री तभी दिखेगी जब सैलून आपकी ग्राहक प्रोफाइल को इसी अकाउंट से सुरक्षित रूप से लिंक करेगा।';
-  content.appendChild(note);
-  const customers=await salonDb.collection('salonCustomers').where('customerUid','==',user.uid).limit(20).get();
-  if (customers.empty) return;
-  note.textContent='आपकी लिंक की गई ग्राहक प्रोफाइल और विज़िट हिस्ट्री:';
-  for (const customer of customers.docs) {
-    const d=customer.data(), card=document.createElement('article');
-    card.className='tile';
-    const h=document.createElement('h3'); h.textContent=d.name || 'Customer';
-    const p=document.createElement('p'); p.textContent='मोबाइल: '+(d.phone || '—');
-    card.append(h,p);
-    const visits=await salonDb.collection('salonVisits').where('customerId','==',customer.id).limit(100).get();
-    const total=visits.docs.reduce((sum,v)=>sum+Number(v.data().paidAmount || 0),0);
-    const v=document.createElement('p'); v.textContent='कुल विज़िट: '+visits.size+' · कुल भुगतान: '+inr(total);
-    card.appendChild(v); content.appendChild(card);
-  }
-}
-
-async function restoreSalonSession(user) {
-  if (!user) {
-    activeSalonId=null; activeSalonName=''; setRoleIcon(null);
-    document.getElementById('customer-tools').hidden=true;
-    roleDashboard.hidden=true;
-    loginBtn.textContent='Login'; loginBtn.title='Login with Google';
-    return;
-  }
-  loginBtn.textContent='Logout';
-  loginBtn.title='Signed in as '+(user.email || '');
-  if (!user.emailVerified) {
-    setRoleIcon(null);
-    status('Verified Google account se login karein.',true);
-    return;
-  }
-  const email=(user.email || '').toLowerCase();
-  if (SUPER_ADMINS.includes(email)) {
-    setRoleIcon('admin');
-    document.getElementById('customer-tools').hidden=true;
-    roleDashboard.hidden=true;
-    return;
-  }
-  try {
-    const owned=await salonDb.collection('salons').where('ownerUid','==',user.uid).limit(10).get();
-    const approved=owned.docs.find(doc=>['APPROVED','LIVE','ACTIVE'].includes(String(doc.data().status || '').toUpperCase()));
-    if (approved) {
-      activeSalonId=approved.id; activeSalonName=approved.data().name || 'My Salon';
-      document.getElementById('customer-tools').hidden=true;
-      roleDashboard.hidden=true;
-      setRoleIcon('owner');
-      status('Welcome, '+activeSalonName+' — 🏪 icon par click karke dashboard kholen.');
-      return;
-    }
-    activeSalonId=null; activeSalonName='';
-    document.getElementById('customer-tools').hidden=true;
-    setRoleIcon('customer');
-    status('Customer login successful. 👤 icon par click karke dashboard kholen.');
-  } catch(error) {
-    console.error('MY SALON session restore failed:',error);
-    setRoleIcon('customer');
-    status('Login ho gaya, lekin role details load nahi hui. Dashboard mein dobara try karein.',true);
-  }
-}
-
-if (salonAuth) salonAuth.onAuthStateChanged(user=>restoreSalonSession(user).catch(error=>console.error('Session restore error:',error)));
-
-dashboardBtn.addEventListener('click',async()=>{
-  if(!salonAuth || !salonAuth.currentUser || !signedInRole) return;
-  try {
-    if(signedInRole==='owner') {
-      document.getElementById('customer-tools').hidden=false;
-      document.getElementById('customer-tools').scrollIntoView({behavior:'smooth',block:'start'});
-    } else if(signedInRole==='admin') {
-      showRoleDashboard('Super Admin Dashboard / सुपर एडमिन','सभी सैलून की स्थिति और रिकॉर्ड।');
-      await loadAdminDashboard();
-    } else {
-      showRoleDashboard('Customer Dashboard / ग्राहक डैशबोर्ड','आपकी प्रोफाइल और आपकी निजी विज़िट हिस्ट्री।');
-      await loadCustomerDashboard(salonAuth.currentUser);
-    }
-  } catch(error) {
-    console.error('Dashboard load failed:',error);
-    showRoleDashboard('Dashboard load नहीं हुआ','डेटा लोड करने में समस्या हुई। कृपया दोबारा कोशिश करें।');
-  }
-});
-
-loginBtn.addEventListener('click', async () => {
-  if (!salonAuth) {
-    alert('Login service abhi connect nahi ho pa rahi. Thodi der baad dobara koshish karein.');
-    return;
-  }
-  if (salonAuth.currentUser) {
-    try {
-      await salonAuth.signOut();
-    } catch (error) {
-      alert('Logout nahi ho saka: ' + (error.message || error.code));
-    }
-    return;
-  }
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  loginBtn.disabled = true;
-  loginBtn.textContent = 'Please wait...';
-  try {
-    await salonAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-    await salonAuth.signInWithPopup(provider);
-    // onAuthStateChanged restores the correct dashboard and keeps the session.
-  } catch (error) {
-    console.error('MY SALON Google sign-in error:', error);
-    const messages = {
-      'auth/unauthorized-domain': 'Firebase Authentication ke Authorized domains mein my-salon-omega.vercel.app add karein.',
-      'auth/popup-blocked': 'Browser ne popup block kiya hai. Address bar ke paas popup allow karein.',
-      'auth/popup-closed-by-user': 'Login popup band ho gaya. Dobara Login dabayein.'
-    };
-    alert(messages[error.code] || ('Google Login nahi ho saka: ' + (error.message || error.code)));
-  } finally {
-    loginBtn.disabled = false;
-    if (!salonAuth.currentUser) loginBtn.textContent = 'Login';
-  }
-});
-
-document.getElementById('searchBtn').addEventListener('click',()=>{
-  const q=document.getElementById('salonSearch').value.trim();
-  if(q)alert('Salon search will be connected when salon listings are added. Search: '+q);
-  else document.getElementById('salonSearch').focus();
-});
-</script>
-</body></html>
+const firebaseConfig={apiKey:"AIzaSyD-FImEhSnsYKRqq7NjHbYJQB04KLhOvIE",authDomain:"my-salon-b71b1.firebaseapp.com",projectId:"my-salon-b71b1",storageBucket:"my-salon-b71b1.firebasestorage.app",messagingSenderId:"497426584536",appId:"1:497426584536:web:c4695aa1caaa5988b318ad"};
+const ADMINS=["ngogrant454@gmail.com","zaradigitalseva@gmail.com"],$=id=>document.getElementById(id),money=n=>"₹"+Number(n||0).toLocaleString("en-IN"),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let auth,db,user=null,role=null,mySalon=null,selectedSalon=null,services=[],dashTab="overview";
+try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)}catch(e){console.error(e)}
+function note(id,msg,bad=false){const el=$(id);el.textContent=msg;el.classList.remove("hidden");el.style.background=bad?"#fff0ef":"#fff3f8";el.style.color=bad?"#a32323":"#8d225d"}
+function dateText(v){return v?.toDate?v.toDate().toLocaleString("en-IN"):"—"}
+function isLive(d){return ["LIVE","ACTIVE","APPROVED"].includes(String(d.status||"").toUpperCase())&&(!d.expiresAt||d.expiresAt.toDate().getTime()>Date.now())}
+async function loadSalons(){try{const snap=await db.collection("salons").where("status","in",["LIVE","ACTIVE","APPROVED"]).limit(100).get();const q=$("search").value.trim().toLowerCase();const docs=snap.docs.filter(x=>isLive(x.data())&&(!q||["name","area","city","state"].some(k=>String(x.data()[k]||"").toLowerCase().includes(q))));docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));$("salonList").innerHTML=docs.map(x=>{const d=x.data();return '<article class="card">'+(d.imageUrl?'<img src="'+esc(d.imageUrl)+'" alt="Salon photo">':'<div class="art" style="min-height:105px;font-size:45px">💇‍♀️</div>')+'<h3>'+esc(d.name)+'</h3><p class="muted">'+esc([d.area,d.city,d.state].filter(Boolean).join(", "))+'</p><span class="badge">LIVE</span><div class="actions"><button class="btn" onclick="openSalon(\''+x.id+'\')">View & Book</button></div></article>'}).join("")||'<p class="muted">अभी कोई LIVE salon उपलब्ध नहीं है।</p>'}catch(e){console.error(e);$("salonList").textContent="Salon list लोड नहीं हुई। Firestore Rules जाँचें।"}}
+window.openSalon=async id=>{const d=await db.collection("salons").doc(id).get();if(!d.exists||!isLive(d.data()))return;selectedSalon={id,...d.data()};$("salons").classList.add("hidden");$("salonDetail").hidden=false;const s=await db.collection("salonServices").where("salonId","==",id).where("active","==",true).limit(80).get();services=s.docs.map(x=>({id:x.id,...x.data()}));$("detailBody").innerHTML='<div class="panel"><h2>'+esc(selectedSalon.name)+'</h2><p class="muted">'+esc([selectedSalon.address,selectedSalon.area,selectedSalon.city,selectedSalon.state].filter(Boolean).join(", "))+'</p><p>'+esc(selectedSalon.description||"Welcome to our salon")+'</p><h3>Services & Prices</h3><div class="list">'+services.map(x=>'<div class="item"><b>'+esc(x.name)+'</b><p>'+esc(x.description||"")+' · '+money(x.price)+'</p><button class="btn" onclick="bookService(\''+x.id+'\')">Book</button></div>').join("")+'</div><h3>Offers</h3><div class="list" id="offers"></div></div>';const offers=await db.collection("salonOffers").where("salonId","==",id).where("active","==",true).limit(30).get();$("offers").innerHTML=offers.docs.map(x=>'<div class="item"><b>'+esc(x.data().title)+'</b><p>'+esc(x.data().details||"")+'</p></div>').join("")||"No active offers"}
+$("backSalons").onclick=()=>{$("salonDetail").hidden=true;$("salons").classList.remove("hidden")};
+window.bookService=async serviceId=>{if(!user){alert("Appointment के लिए पहले Google Login करें।");return}const s=services.find(x=>x.id===serviceId);const date=prompt("Appointment date और time लिखें (जैसे 20/11/2026 5:00 PM)");if(!date)return;const phone=prompt("अपना 10 अंकों का मोबाइल नंबर");if(!phone||!/^\d{10}$/.test(phone))return alert("सही मोबाइल नंबर डालें");const ref=await db.collection("appointments").add({salonId:selectedSalon.id,salonName:selectedSalon.name,serviceId,serviceName:s.name,price:s.price,customerUid:user.uid,customerName:user.displayName||"",customerPhone:phone,dateText:date,status:"PENDING",createdAt:firebase.firestore.FieldValue.serverTimestamp()});const msg=encodeURIComponent("MY SALON appointment request\n"+selectedSalon.name+"\n"+s.name+" · "+money(s.price)+"\nDate: "+date+"\nCustomer: "+(user.displayName||"")+"\nBooking ID: "+ref.id);if(selectedSalon.whatsapp)window.open("https://wa.me/91"+String(selectedSalon.whatsapp).replace(/\D/g,"")+"?text="+msg,"_blank");alert("Appointment request भेज दी गई। Salon confirmation का इंतज़ार करें।")};
+$("searchBtn").onclick=loadSalons;
+$("registerForm").onsubmit=async e=>{e.preventDefault();if(!user)return note("registerStatus","पहले Google Login करें।",true);const f=new FormData(e.target),d=Object.fromEntries(f.entries());try{const existing=await db.collection("salons").where("ownerUid","==",user.uid).limit(1).get();if(!existing.empty)throw Error("इस Google अकाउंट से salon registration पहले से मौजूद है।");await db.collection("salons").add({...d,ownerUid:user.uid,status:"PENDING_PAYMENT",paymentStatus:"NOT_SUBMITTED",planFee:599,createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});note("registerStatus","Registration सेव हो गया। अब Super Admin की payment instructions और verification का इंतज़ार करें।");e.target.reset()}catch(err){note("registerStatus",err.message||"Registration सेव नहीं हुआ।",true)}};
+$("login").onclick=async()=>{if(!auth)return alert("Firebase login unavailable");if(user){await auth.signOut();return}try{const p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:"select_account"});await auth.signInWithPopup(p)}catch(e){alert(e.message)}};
+$("closeDash").onclick=()=>{$("dashboard").classList.add("hidden")};
+$("dashBtn").onclick=()=>showDashboard();
+$("registerForm").querySelector("button").disabled=false;
+auth.onAuthStateChanged(async u=>{user=u;role=null;mySalon=null;$("login").textContent=u?"Logout":"Google Login";$("dashBtn").classList.add("hidden");if(!u)return;const email=(u.email||"").toLowerCase();if(ADMINS.includes(email)){role="admin"}else{const own=await db.collection("salons").where("ownerUid","==",u.uid).limit(5).get();const approved=own.docs.find(x=>isLive(x.data()));if(approved){role="owner";mySalon={id:approved.id,...approved.data()}}else role="customer"}$("dashBtn").textContent=role==="admin"?"🛡️ Admin":role==="owner"?"🏪 Owner":"👤 Customer";$("dashBtn").classList.remove("hidden")});
+function tabButtons(tabs){return '<div class="tabs">'+tabs.map(t=>'<button class="'+(dashTab===t[0]?'active':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>').join("")+'</div><div id="tabContent"></div>'}
+window.setTab=t=>{dashTab=t;showDashboard()};
+async function showDashboard(){if(!user)return; $("dashboard").classList.remove("hidden");$("dashboard").scrollIntoView({behavior:"smooth"});$("dashTitle").textContent=role==="admin"?"Super Admin Dashboard":role==="owner"?"Shop Owner Dashboard":"Customer Dashboard";$("roleTag").textContent=String(role||"customer").toUpperCase();$("dashIntro").textContent="नमस्ते "+(user.displayName||user.email);if(role==="admin")return adminDashboard();if(role==="owner")return ownerDashboard();return customerDashboard()}
+async function adminDashboard(){const tabs=[["overview","Salons"],["payments","Payments"],["settings","Payment Settings"]];$("dashBody").innerHTML=tabButtons(tabs);const c=$("tabContent");if(dashTab==="settings"){const p=await db.collection("publicSettings").doc("payment").get(),d=p.data()||{};c.innerHTML='<div class="panel"><h3>UPI & Payment Details</h3><div class="field"><label>UPI ID</label><input id="upi" value="'+esc(d.upiId||"")+'"></div><div class="field"><label>QR Image URL</label><input id="qr" value="'+esc(d.qrUrl||"")+'"></div><div class="field"><label>Payment Name</label><input id="payname" value="'+esc(d.payeeName||"")+'"></div><button class="btn" id="savePay">Save Settings</button></div>';return $("savePay").onclick=async()=>{await db.collection("publicSettings").doc("payment").set({upiId:$("upi").value.trim(),qrUrl:$("qr").value.trim(),payeeName:$("payname").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});alert("Payment settings saved")}}
+const snap=await db.collection("salons").limit(150).get();const docs=snap.docs.filter(x=>dashTab==="payments"?["SUBMITTED_FOR_REVIEW","RENEWAL_REVIEW"].includes(x.data().paymentStatus):true);c.innerHTML='<div class="list">'+docs.map(x=>{const d=x.data();return '<div class="item"><h4>'+esc(d.name)+' <span class="badge">'+esc(d.status)+'</span></h4><p>'+esc(d.ownerName)+' · '+esc(d.phone)+' · '+esc(d.city)+'</p><p>Payment: '+esc(d.paymentStatus||"—")+' · UTR: '+esc(d.utr||"—")+'</p><p>Plan: '+money(d.planFee||599)+' · Expiry: '+dateText(d.expiresAt)+'</p><div class="actions"><button class="btn" onclick="adminApprove(\''+x.id+'\')">Approve / LIVE</button><button class="btn alt" onclick="adminReject(\''+x.id+'\')">Reject</button><button class="btn alt" onclick="adminSuspend(\''+x.id+'\')">Suspend</button></div></div>'}).join("")||"No salon records"}</div>'}
+window.adminApprove=async id=>{const d=(await db.collection("salons").doc(id).get()).data();const now=firebase.firestore.Timestamp.now();const start=d.expiresAt&&d.expiresAt.toDate()>new Date()?d.expiresAt.toDate():new Date();start.setDate(start.getDate()+30);await db.collection("salons").doc(id).update({status:"LIVE",paymentStatus:"VERIFIED",activatedAt:now,expiresAt:firebase.firestore.Timestamp.fromDate(start),updatedAt:now});alert("Salon activated for 30 days");showDashboard()};
+window.adminReject=async id=>{await db.collection("salons").doc(id).update({status:"REJECTED",paymentStatus:"REJECTED",updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()};
+window.adminSuspend=async id=>{await db.collection("salons").doc(id).update({status:"SUSPENDED",updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()};
+async function ownerDashboard(){const tabs=[["overview","Overview"],["services","Services"],["offers","Offers"],["appointments","Appointments"],["customers","Customers"],["payment","Renewal"]];$("dashBody").innerHTML=tabButtons(tabs);const c=$("tabContent");if(dashTab==="overview"){c.innerHTML='<div class="panel"><h3>'+esc(mySalon.name)+'</h3><p>Status: '+esc(mySalon.status)+' · Expires: '+dateText(mySalon.expiresAt)+'</p><p>WhatsApp: '+esc(mySalon.whatsapp||"Not set")+'</p><div class="field"><label>WhatsApp number</label><input id="ownerWa" value="'+esc(mySalon.whatsapp||"")+'"></div><div class="field"><label>Salon description</label><textarea id="ownerDesc">'+esc(mySalon.description||"")+'</textarea></div><button class="btn" id="saveSalon">Save profile</button></div>';return $("saveSalon").onclick=async()=>{await db.collection("salons").doc(mySalon.id).update({whatsapp:$("ownerWa").value.replace(/\D/g,""),description:$("ownerDesc").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});alert("Profile saved")}}
+if(dashTab==="services"){const s=await db.collection("salonServices").where("salonId","==",mySalon.id).limit(100).get();c.innerHTML='<div class="panel"><h3>Add service / product</h3><div class="field"><input id="svcName" placeholder="Service name"></div><div class="field"><input id="svcPrice" type="number" min="0" placeholder="Price ₹"></div><div class="field"><textarea id="svcDesc" placeholder="Description"></textarea></div><button class="btn" id="addSvc">Add</button></div><div class="list" style="margin-top:12px">'+s.docs.map(x=>'<div class="item"><b>'+esc(x.data().name)+'</b> · '+money(x.data().price)+' <button class="btn alt" onclick="deleteService(\''+x.id+'\')">Delete</button></div>').join("")+'</div>';return $("addSvc").onclick=async()=>{const name=$("svcName").value.trim(),price=Number($("svcPrice").value);if(!name||!Number.isFinite(price)||price<0)return alert("Enter service and valid price");await db.collection("salonServices").add({salonId:mySalon.id,ownerUid:user.uid,name,price,description:$("svcDesc").value.trim(),active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()}}
+if(dashTab==="offers"){const s=await db.collection("salonOffers").where("salonId","==",mySalon.id).limit(60).get();c.innerHTML='<div class="panel"><h3>Create offer / notice</h3><input id="offerTitle" placeholder="Offer title"><textarea id="offerDetails" placeholder="Details"></textarea><button class="btn" id="addOffer">Publish</button></div><div class="list">'+s.docs.map(x=>'<div class="item">'+esc(x.data().title)+' <span class="badge">'+(x.data().active?"Active":"Hidden")+'</span></div>').join("")+'</div>';return $("addOffer").onclick=async()=>{const title=$("offerTitle").value.trim();if(!title)return alert("Title required");await db.collection("salonOffers").add({salonId:mySalon.id,ownerUid:user.uid,title,details:$("offerDetails").value.trim(),active:true,createdAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()}}
+if(dashTab==="appointments"){const s=await db.collection("appointments").where("salonId","==",mySalon.id).limit(100).get();c.innerHTML='<div class="list">'+s.docs.map(x=>{const d=x.data();return '<div class="item"><b>'+esc(d.serviceName)+'</b><p>'+esc(d.customerName)+' · '+esc(d.customerPhone)+' · '+esc(d.dateText)+'</p><p>Status: '+esc(d.status)+'</p><div class="actions"><button class="btn" onclick="bookingStatus(\''+x.id+'\',\'CONFIRMED\')">Confirm</button><button class="btn alt" onclick="bookingStatus(\''+x.id+'\',\'REJECTED\')">Reject</button></div></div>'}).join("")||"No appointments"}</div>';return}
+if(dashTab==="customers"){const s=await db.collection("salonCustomers").where("salonId","==",mySalon.id).limit(100).get();c.innerHTML='<div class="panel"><h3>Customer CRM</h3><p class="muted">ग्राहक का नाम और मोबाइल जोड़ें। Customer अपने Google अकाउंट से संपर्क करके प्रोफाइल लिंक कराने की पुष्टि कर सकता है।</p><input id="crmName" placeholder="Customer name"><input id="crmPhone" maxlength="10" placeholder="10 digit mobile"><button class="btn" id="addCrm">Add customer</button></div><div class="list">'+s.docs.map(x=>'<div class="item">'+esc(x.data().name)+' · '+esc(x.data().phone)+' · Visits: '+(x.data().visitCount||0)+'</div>').join("")+'</div>';return $("addCrm").onclick=async()=>{const name=$("crmName").value.trim(),phone=$("crmPhone").value.trim();if(!name||!/^\d{10}$/.test(phone))return alert("Name और 10 digit mobile जरूरी");await db.collection("salonCustomers").add({salonId:mySalon.id,ownerUid:user.uid,name,phone,customerUid:null,visitCount:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()}}
+if(dashTab==="payment"){const p=await db.collection("publicSettings").doc("payment").get(),d=p.data()||{};c.innerHTML='<div class="panel"><h3>Renewal Payment</h3><p>₹299 / अगले 30 दिन</p><p>UPI: '+esc(d.upiId||"Admin से संपर्क करें")+'</p>'+(d.qrUrl?'<img style="width:180px;object-fit:contain" src="'+esc(d.qrUrl)+'">':"")+'<p>Payment के बाद UTR और screenshot URL दें। Admin verify करेगा।</p><input id="renewUtr" placeholder="UTR / Transaction ID"><input id="renewProof" placeholder="Payment screenshot URL (optional)"><button class="btn" id="renewSend">Submit payment</button></div>';return $("renewSend").onclick=async()=>{const utr=$("renewUtr").value.trim();if(!utr)return alert("UTR जरूरी है");await db.collection("salons").doc(mySalon.id).update({utr,paymentProofUrl:$("renewProof").value.trim(),paymentStatus:"SUBMITTED_FOR_REVIEW",planFee:299,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});alert("Payment submitted for admin verification")}}}
+window.deleteService=async id=>{await db.collection("salonServices").doc(id).update({active:false});showDashboard()};
+window.bookingStatus=async(id,status)=>{await db.collection("appointments").doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()};
+async function customerDashboard(){const s=await db.collection("appointments").where("customerUid","==",user.uid).limit(100).get();$("dashBody").innerHTML='<div class="panel"><h3>My Appointments / मेरी बुकिंग</h3><div class="list">'+s.docs.map(x=>{const d=x.data();return '<div class="item"><b>'+esc(d.salonName)+'</b><p>'+esc(d.serviceName)+' · '+money(d.price)+'</p><p>'+esc(d.dateText)+' · '+esc(d.status)+'</p></div>'}).join("")+'</div></div><p class="muted">Customer records और visit history केवल संबंधित salon की अनुमति से दिखाई जाएगी।</p>'}
+loadSalons();
+</script></body></html>
