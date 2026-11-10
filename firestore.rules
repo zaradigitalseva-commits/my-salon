@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSuperAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'ngogrant454@gmail.com',
+          'zaradigitalseva@gmail.com'
+        ];
+    }
+
+    // Public website settings and logo.
+    // Anyone can view them; only verified Super Admins can change them.
+    match /publicSettings/{documentId} {
+      allow read: if true;
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    // All other collections remain denied until their rules are
+    // deliberately added and reviewed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
