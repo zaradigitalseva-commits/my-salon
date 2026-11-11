@@ -90,8 +90,29 @@ async function adminDashboard(){
  if(dashTab==="settings"){
   try{
    const p=await db.collection("publicSettings").doc("payment").get(),d=p.data()||{};
-   c.innerHTML='<div class="panel"><h3>UPI & Payment Details</h3><div class="field"><label>UPI ID</label><input id="upi" value="'+esc(d.upiId||"")+'"></div><div class="field"><label>QR Image URL</label><input id="qr" value="'+esc(d.qrUrl||"")+'"></div><div class="field"><label>Payment Name</label><input id="payname" value="'+esc(d.payeeName||"")+'"></div><button class="btn" id="savePay">Save Settings</button></div>';
-   $("savePay").onclick=async()=>{try{await db.collection("publicSettings").doc("payment").set({upiId:$("upi").value.trim(),qrUrl:$("qr").value.trim(),payeeName:$("payname").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});alert("Payment settings saved");}catch(err){alert("Save failed: "+err.message)}};
+   let qrData=String(d.qrUrl||"");
+   c.innerHTML='<div class="panel"><h3>UPI & Payment Details</h3><div class="field"><label>UPI ID</label><input id="upi" value="'+esc(d.upiId||"")+'"></div><div class="field"><label>QR Image Upload</label><input id="qrFile" type="file" accept="image/*"><small class="muted">Image browser में resize और lossless PNG compress होगी (अधिकतम 450 KB)।</small></div><div id="qrPreview" style="margin:12px 0">'+(qrData?'<img alt="Current UPI QR" style="width:190px;max-height:220px;object-fit:contain;border:1px solid #ddd;border-radius:12px;padding:8px;background:#fff" src="'+esc(qrData)+'">':'<p class="muted">अभी QR इमेज सेट नहीं है।</p>')+'</div><button class="btn alt" id="removeQr" type="button">Remove QR</button><div class="field"><label>Payment Name</label><input id="payname" value="'+esc(d.payeeName||"")+'"></div><button class="btn" id="savePay">Save Settings</button></div>';
+   $("qrFile").onchange=async ev=>{
+    const file=ev.target.files&&ev.target.files[0];if(!file)return;
+    if(!file.type.startsWith("image/")){alert("कृपया image file चुनें।");ev.target.value="";return}
+    if(file.size>10*1024*1024){alert("QR image 10 MB से छोटी चुनें।");ev.target.value="";return}
+    try{
+     const source=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error("Image पढ़ी नहीं जा सकी।"));reader.readAsDataURL(file)});
+     const img=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error("यह image खुल नहीं सकी।"));image.src=source});
+     let compressed=null;
+     for(const maxSide of [700,600,500,400]){
+      const scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
+      const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+      const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
+      if(blob&&blob.size<=450*1024){compressed=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error("Compressed image पढ़ी नहीं जा सकी।"));reader.readAsDataURL(blob)});break}
+     }
+     if(!compressed)throw new Error("QR image 450 KB से कम नहीं हो रही। कृपया छोटी/साफ image चुनें।");
+     qrData=compressed;$("qrPreview").innerHTML='<img alt="Compressed UPI QR preview" style="width:190px;max-height:220px;object-fit:contain;border:1px solid #ddd;border-radius:12px;padding:8px;background:#fff" src="'+esc(qrData)+'"><p class="muted">Compressed QR तैयार है · '+Math.round((qrData.length*3/4)/1024)+' KB लगभग</p>';
+    }catch(err){alert("QR upload नहीं हुआ: "+err.message);ev.target.value=""}
+   };
+   $("removeQr").onclick=()=>{qrData="";$("qrPreview").innerHTML='<p class="muted">QR हटाया गया है। Save Settings दबाने पर हटेगा।</p>';$("qrFile").value=""};
+   $("savePay").onclick=async()=>{try{await db.collection("publicSettings").doc("payment").set({upiId:$("upi").value.trim(),qrUrl:qrData,payeeName:$("payname").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});alert("Payment settings saved");}catch(err){alert("Save failed: "+err.message)}};
    return;
   }catch(err){c.textContent="Payment settings load failed: "+err.message;return}
  }
