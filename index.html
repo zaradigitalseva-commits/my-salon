@@ -127,7 +127,7 @@ async function adminDashboard(){
   const isSubmitted=d=>["SUBMITTED_FOR_REVIEW","RENEWAL_REVIEW"].includes(String(d.paymentStatus||"").toUpperCase());
   const isRejectedOrSuspended=d=>["REJECTED","SUSPENDED"].includes(String(d.status||"").toUpperCase())||String(d.paymentStatus||"").toUpperCase()==="REJECTED";
   const cards=[
-   ["Total Salons",records.length],["New Registrations",count(d=>isPending(d)&&!isSubmitted(d))],
+   ["Total Salons",records.length],["Salon Approval",count(d=>isPending(d)&&!isSubmitted(d))],
    ["Payment Verification",count(isSubmitted)],["LIVE Salons",count(isLive)],
    ["Rejected",count(d=>String(d.status||"").toUpperCase()==="REJECTED")],
    ["Suspended",count(d=>String(d.status||"").toUpperCase()==="SUSPENDED")]
