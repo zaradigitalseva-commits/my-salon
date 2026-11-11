@@ -83,7 +83,74 @@ auth.onAuthStateChanged(async u=>{user=u;document.body.classList.toggle("guest-v
 function tabButtons(tabs){return '<div class="tabs">'+tabs.map(t=>'<button class="'+(dashTab===t[0]?'active':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>').join("")+'</div><div id="tabContent"></div>'}
 window.setTab=t=>{dashTab=t;showDashboard()};
 async function showDashboard(){if(!user)return; $("dashboard").classList.remove("hidden");$("dashboard").scrollIntoView({behavior:"smooth"});$("dashTitle").textContent=role==="admin"?"Super Admin Dashboard":role==="owner"?"Shop Owner Dashboard":"Customer Dashboard";$("roleTag").textContent=String(role||"customer").toUpperCase();$("dashIntro").textContent=role==="admin"?"Super Admin · "+user.email:role==="pending-owner"?"Registration status: "+(mySalon.status||"PENDING_PAYMENT"):"नमस्ते "+(user.displayName||user.email);if(role==="admin")return adminDashboard();if(role==="owner")return ownerDashboard();if(role==="pending-owner")return pendingOwnerDashboard();return customerDashboard()}
-async function adminDashboard(){const tabs=[["overview","Salons"],["payments","Payments"],["settings","Payment Settings"]];$("dashBody").innerHTML=tabButtons(tabs);const c=$("tabContent");if(dashTab==="settings"){try{const p=await db.collection("publicSettings").doc("payment").get(),d=p.data()||{};c.innerHTML='<div class="panel"><h3>UPI & Payment Details</h3><div class="field"><label>UPI ID</label><input id="upi" value="'+esc(d.upiId||"")+'"></div><div class="field"><label>QR Image URL</label><input id="qr" value="'+esc(d.qrUrl||"")+'"></div><div class="field"><label>Payment Name</label><input id="payname" value="'+esc(d.payeeName||"")+'"></div><button class="btn" id="savePay">Save Settings</button></div>';$("savePay").onclick=async()=>{try{await db.collection("publicSettings").doc("payment").set({upiId:$("upi").value.trim(),qrUrl:$("qr").value.trim(),payeeName:$("payname").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});alert("Payment settings saved")}catch(err){alert("Save failed: "+err.message)}};return}catch(err){c.textContent="Payment settings load failed: "+err.message;return}}try{const snap=await db.collection("salons").limit(150).get();let syncWarning="";if(!publicListingsSynced){try{await syncPublicSalonsOnce()}catch(syncErr){syncWarning="Public listing sync नहीं हुआ: "+syncErr.message}}const docs=snap.docs.filter(x=>dashTab==="payments"?["SUBMITTED_FOR_REVIEW","RENEWAL_REVIEW"].includes(x.data().paymentStatus):true);const pending=snap.docs.filter(x=>["PENDING_PAYMENT","PENDING_REVIEW"].includes(String(x.data().status||"").toUpperCase())).length;const live=snap.docs.filter(x=>isLive(x.data())).length;const rows=docs.map(x=>{const d=x.data();return '<div class="item"><h4>'+esc(d.name||"Unnamed Salon")+' <span class="badge">'+esc(d.status||"UNKNOWN")+'</span></h4><p>'+esc(d.ownerName||"")+' · '+esc(d.phone||"")+' · '+esc(d.city||"")+'</p><p>Payment: '+esc(d.paymentStatus||"—")+' · UTR: '+esc(d.utr||"—")+'</p>'+(d.paymentProofUrl&&/^https:\/\//i.test(d.paymentProofUrl)?'<p><a href="'+esc(d.paymentProofUrl)+'" target="_blank" rel="noopener noreferrer">View payment screenshot</a></p>':'<p class="muted">Payment screenshot उपलब्ध नहीं है</p>')+'<p>Plan: '+money(d.planFee||599)+' · Expiry: '+dateText(d.expiresAt)+'</p><div class="actions"><button class="btn adminApproveBtn" data-id="'+x.id+'">Approve / LIVE</button><button class="btn alt adminRejectBtn" data-id="'+x.id+'">Reject</button><button class="btn alt adminSuspendBtn" data-id="'+x.id+'">Suspend</button>'+(String(d.status||"").toUpperCase()==="SUSPENDED"?'<button class="btn adminRestoreBtn" data-id="'+x.id+'">Restore</button>':"")+'</div></div>'}).join("");c.innerHTML='<div class="panel"><b>Total records: '+snap.size+' · LIVE: '+live+' · Pending: '+pending+'</b><p class="muted">रिकॉर्ड नहीं दिखे तो Firebase Rules और project की जाँच करें।</p>'+(syncWarning?'<p class="muted" style="color:#a32323">'+esc(syncWarning)+'</p>':"")+'<button class="btn alt" id="refreshAdmin">Refresh list</button></div><div class="list">'+(rows||(dashTab==="payments"?"अभी कोई payment verification pending नहीं है।":"अभी कोई salon registration उपलब्ध नहीं है।"))+'</div>';$("refreshAdmin").onclick=()=>showDashboard();c.querySelectorAll(".adminApproveBtn").forEach(b=>b.onclick=()=>adminApprove(b.dataset.id));c.querySelectorAll(".adminRejectBtn").forEach(b=>b.onclick=()=>adminReject(b.dataset.id));c.querySelectorAll(".adminSuspendBtn").forEach(b=>b.onclick=()=>adminSuspend(b.dataset.id));c.querySelectorAll(".adminRestoreBtn").forEach(b=>b.onclick=()=>adminRestore(b.dataset.id))}catch(err){console.error("Admin salon list error",err);c.innerHTML='<div class="panel"><h3>Salon records लोड नहीं हुए</h3><p>'+esc(err.message)+'</p><p>Firebase Console में my-salon-b71b1 के Firestore Rules publish और Admin login verify जाँचें।</p><button class="btn" id="retryAdmin">Retry</button></div>';$("retryAdmin").onclick=()=>showDashboard()}}window.adminApprove=async id=>{
+async function adminDashboard(){
+ const tabs=[["overview","Overview"],["registrations","Owner Registrations"],["payments","Payment Verification"],["all","All Salons"],["live","LIVE Salons"],["inactive","Rejected / Suspended"],["settings","Payment Settings"]];
+ $("dashBody").innerHTML=tabButtons(tabs);
+ const c=$("tabContent");
+ if(dashTab==="settings"){
+  try{
+   const p=await db.collection("publicSettings").doc("payment").get(),d=p.data()||{};
+   c.innerHTML='<div class="panel"><h3>UPI & Payment Details</h3><div class="field"><label>UPI ID</label><input id="upi" value="'+esc(d.upiId||"")+'"></div><div class="field"><label>QR Image URL</label><input id="qr" value="'+esc(d.qrUrl||"")+'"></div><div class="field"><label>Payment Name</label><input id="payname" value="'+esc(d.payeeName||"")+'"></div><button class="btn" id="savePay">Save Settings</button></div>';
+   $("savePay").onclick=async()=>{try{await db.collection("publicSettings").doc("payment").set({upiId:$("upi").value.trim(),qrUrl:$("qr").value.trim(),payeeName:$("payname").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});alert("Payment settings saved");}catch(err){alert("Save failed: "+err.message)}};
+   return;
+  }catch(err){c.textContent="Payment settings load failed: "+err.message;return}
+ }
+ c.innerHTML='<div class="panel">Salon records लोड हो रहे हैं…</div>';
+ try{
+  const snap=await db.collection("salons").get();
+  const records=snap.docs.map(x=>({id:x.id,d:x.data()||{}}));
+  let syncWarning="";
+  if(!publicListingsSynced){try{await syncPublicSalonsOnce()}catch(syncErr){syncWarning="Public listing sync नहीं हुआ: "+syncErr.message}}
+  const count=(fn)=>records.filter(x=>fn(x.d)).length;
+  const isPending=d=>["PENDING_PAYMENT","PENDING_REVIEW"].includes(String(d.status||"").toUpperCase());
+  const isSubmitted=d=>["SUBMITTED_FOR_REVIEW","RENEWAL_REVIEW"].includes(String(d.paymentStatus||"").toUpperCase());
+  const isRejectedOrSuspended=d=>["REJECTED","SUSPENDED"].includes(String(d.status||"").toUpperCase())||String(d.paymentStatus||"").toUpperCase()==="REJECTED";
+  const cards=[
+   ["Total Salons",records.length],["New Registrations",count(d=>isPending(d)&&!isSubmitted(d))],
+   ["Payment Verification",count(isSubmitted)],["LIVE Salons",count(isLive)],
+   ["Rejected",count(d=>String(d.status||"").toUpperCase()==="REJECTED")],
+   ["Suspended",count(d=>String(d.status||"").toUpperCase()==="SUSPENDED")]
+  ];
+  const cardHtml='<div class="grid" style="margin:12px 0">'+cards.map(x=>'<div class="card"><p class="muted">'+x[0]+'</p><h2 style="margin:4px 0">'+x[1]+'</h2></div>').join("")+'</div>';
+  const searchHtml='<div class="panel"><label for="adminSearch"><b>Salon खोजें</b></label><input id="adminSearch" placeholder="Salon name, owner, mobile, area या city"><p class="muted small">Owner खुद registration करता है। Admin केवल details और UTR जाँचकर approval देता है।</p>'+(syncWarning?'<p style="color:#a32323">'+esc(syncWarning)+'</p>':"")+'<button class="btn alt" id="refreshAdmin">Refresh list</button></div>';
+  const filtered=()=>{
+   const q=($("adminSearch")?.value||"").trim().toLowerCase();
+   return records.filter(({d})=>{
+    const status=String(d.status||"").toUpperCase();
+    if(dashTab==="registrations"&&(!isPending(d)||isSubmitted(d)))return false;
+    if(dashTab==="payments"&&!isSubmitted(d))return false;
+    if(dashTab==="live"&&!isLive(d))return false;
+    if(dashTab==="inactive"&&!isRejectedOrSuspended(d))return false;
+    if(dashTab==="all"&&false)return false;
+    return !q||["name","ownerName","phone","area","city","state","utr"].some(k=>String(d[k]||"").toLowerCase().includes(q));
+   }).sort((a,b)=>(b.d.createdAt?.seconds||0)-(a.d.createdAt?.seconds||0));
+  };
+  const drawRows=()=>{
+   const list=filtered();
+   const rows=list.map(({id,d})=>{
+    const status=String(d.status||"UNKNOWN").toUpperCase(),payment=String(d.paymentStatus||"NOT_SUBMITTED").toUpperCase();
+    const canApprove=isSubmitted(d)&&["PENDING_PAYMENT","PENDING_REVIEW","REJECTED","LIVE","ACTIVE","APPROVED"].includes(status);
+    const proof=d.paymentProofUrl&&/^https:\/\//i.test(String(d.paymentProofUrl))?'<a href="'+esc(d.paymentProofUrl)+'" target="_blank" rel="noopener noreferrer">Payment screenshot देखें</a>':'<span class="muted">Screenshot उपलब्ध नहीं</span>';
+    return '<div class="item"><h4>'+esc(d.name||"Unnamed Salon")+' <span class="badge">'+esc(status)+'</span></h4><p>'+esc(d.ownerName||"")+' · '+esc(d.phone||"")+' · '+esc([d.area,d.city,d.state].filter(Boolean).join(", "))+'</p><p><b>Payment:</b> '+esc(payment)+' · <b>UTR:</b> '+esc(d.utr||"—")+'</p><p>'+proof+'</p><p>Plan: '+money(d.planFee||(status==="LIVE"?299:599))+' · Expiry: '+dateText(d.expiresAt)+'</p><div class="actions">'+(canApprove?'<button class="btn adminApproveBtn" data-id="'+id+'">Verify & Approve / LIVE</button>':"")+(isSubmitted(d)||isPending(d)?'<button class="btn alt adminRejectBtn" data-id="'+id+'">Reject</button>':"")+(status!=="SUSPENDED"&&isLive(d)?'<button class="btn alt adminSuspendBtn" data-id="'+id+'">Suspend</button>':"")+(status==="SUSPENDED"?'<button class="btn adminRestoreBtn" data-id="'+id+'">Restore</button>':"")+'</div></div>';
+   }).join("");
+   const empty=dashTab==="payments"?"अभी कोई UTR payment verification के लिए जमा नहीं हुआ है।":dashTab==="registrations"?"अभी कोई नई owner registration pending नहीं है।":dashTab==="live"?"अभी कोई LIVE salon नहीं है।":dashTab==="inactive"?"Rejected या Suspended salon नहीं हैं।":"कोई salon record नहीं मिला।";
+   $("adminRows").innerHTML=rows||'<div class="panel">'+empty+'</div>';
+   $("adminRows").querySelectorAll(".adminApproveBtn").forEach(b=>b.onclick=()=>adminApprove(b.dataset.id));
+   $("adminRows").querySelectorAll(".adminRejectBtn").forEach(b=>b.onclick=()=>adminReject(b.dataset.id));
+   $("adminRows").querySelectorAll(".adminSuspendBtn").forEach(b=>b.onclick=()=>adminSuspend(b.dataset.id));
+   $("adminRows").querySelectorAll(".adminRestoreBtn").forEach(b=>b.onclick=()=>adminRestore(b.dataset.id));
+  };
+  c.innerHTML=(dashTab==="overview"?cardHtml:'')+searchHtml+'<div id="adminRows" class="list"></div>';
+  $("adminSearch").oninput=drawRows;
+  $("refreshAdmin").onclick=()=>showDashboard();
+  drawRows();
+ }catch(err){
+  console.error("Admin salon list error",err);
+  c.innerHTML='<div class="panel"><h3>Salon records लोड नहीं हुए</h3><p>'+esc(err.message)+'</p><p>Firebase Console में my-salon-b71b1 के Firestore Rules publish और Admin login verify जाँचें।</p><button class="btn" id="retryAdmin">Retry</button></div>';
+  $("retryAdmin").onclick=()=>showDashboard();
+ }
+}
+window.adminApprove=async id=>{
  try{
   const salonRef=db.collection("salons").doc(id),snap=await salonRef.get();
   if(!snap.exists)return alert("Salon record नहीं मिला।");
