@@ -64,7 +64,7 @@ service cloud.firestore {
       // Public users can see approved listings; owners can always see their own
       // record, including rejected, suspended, and expired salons.
       allow read: if isAdmin()
-        || isSalonOwner(salonId)
+        || (signedIn() && resource.data.ownerUid == request.auth.uid)
         || resource.data.status in ['LIVE', 'ACTIVE', 'APPROVED'];
 
       allow create: if signedIn()
