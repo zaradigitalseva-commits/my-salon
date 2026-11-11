@@ -60,12 +60,34 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /publicSalons/{salonId} {
+      // Only a deliberately limited public profile is stored in this collection.
+      allow read: if true;
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (
+          isSalonOwner(salonId)
+          && resource.data.salonId == salonId
+          && request.resource.data.salonId == resource.data.salonId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'whatsapp', 'description', 'updatedAt'
+          ])
+          && request.resource.data.whatsapp is string
+          && (
+            request.resource.data.whatsapp == ''
+            || request.resource.data.whatsapp.matches('^[0-9]{10,15}$')
+          )
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 500
+          && request.resource.data.updatedAt is timestamp
+        );
+    }
+
     match /salons/{salonId} {
       // Public users can see approved listings; owners can always see their own
       // record, including rejected, suspended, and expired salons.
       allow read: if isAdmin()
-        || (signedIn() && resource.data.ownerUid == request.auth.uid)
-        || resource.data.status in ['LIVE', 'ACTIVE', 'APPROVED'];
+        || (signedIn() && resource.data.ownerUid == request.auth.uid);
 
       allow create: if signedIn()
         && request.auth.token.email_verified == true
