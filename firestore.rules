@@ -40,9 +40,9 @@ service cloud.firestore {
     }
 
     function ownerOfData() {
-      return signedIn()
-        && resource.data.ownerUid == request.auth.uid
-        && isSalonOwner(resource.data.salonId);
+      // The parent salon document is the source of ownership for every
+      // salon-scoped collection, so queries can safely filter by salonId.
+      return isSalonOwner(resource.data.salonId);
     }
 
     function validPaymentSubmission() {
