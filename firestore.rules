@@ -282,12 +282,12 @@ service cloud.firestore {
         && salonIsLive(request.resource.data.salonId)
         && request.resource.data.salonName is string
         && request.resource.data.salonName == get(salonPath(request.resource.data.salonId)).data.name
-        && request.resource.data['service']Id is string
-        && exists(/databases/$(database)/documents/salonServices/$(request.resource.data['service']Id))
-        && get(/databases/$(database)/documents/salonServices/$(request.resource.data['service']Id)).data.salonId == request.resource.data.salonId
-        && get(/databases/$(database)/documents/salonServices/$(request.resource.data['service']Id)).data.active == true
-        && request.resource.data['service']Name == get(/databases/$(database)/documents/salonServices/$(request.resource.data['service']Id)).data.name
-        && request.resource.data.price == get(/databases/$(database)/documents/salonServices/$(request.resource.data['service']Id)).data.price
+        && request.resource.data.serviceId is string
+        && exists(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId))
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.salonId == request.resource.data.salonId
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.active == true
+        && request.resource.data.serviceName == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.name
+        && request.resource.data.price == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.price
         && request.resource.data.customerName is string
         && request.resource.data.customerName.size() <= 100
         && request.resource.data.customerPhone is string
