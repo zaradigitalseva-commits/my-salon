@@ -387,7 +387,29 @@ service cloud.firestore {
         || ownerOfData()
         || (signedIn() && resource.data.customerUid == request.auth.uid);
 
-      allow update, delete: if isAdmin()
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'service', 'amount', 'discount', 'paidAmount', 'customerUid', 'updatedAt'
+          ])
+          && request.resource.data.service is string
+          && request.resource.data.service.size() > 0
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0
+          && request.resource.data.discount is number
+          && request.resource.data.discount >= 0
+          && request.resource.data.discount <= request.resource.data.amount
+          && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+          && (!('customerUid' in request.resource.data)
+            || request.resource.data.customerUid == null
+            || request.resource.data.customerUid is string)
+          && (!('updatedAt' in request.resource.data)
+            || request.resource.data.updatedAt is timestamp)
+        );
+
+      allow delete: if isAdmin()
         || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
     }
 
