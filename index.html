@@ -102,6 +102,29 @@ body.route-home #marketAbout,body.route-home #legacyTestimonials,body.route-home
  body.route-home .legacy-subtitle{font-size:22px;max-width:280px}
  body.route-home .legacy-call{margin-top:26px;padding:14px 30px}
 }
+
+/* Keep the classic homepage content from the supplied reference */
+body.route-home #marketAbout,
+body.route-home #legacyTestimonials,
+body.route-home #marketVisit{display:block!important}
+body.route-home #legacyContactPage,
+body.route-home #legacyAboutPage,
+body.route-home #services{display:none!important}
+body.route-home #marketAbout,
+body.route-home #legacyTestimonials,
+body.route-home #marketVisit{max-width:1120px;margin-left:auto;margin-right:auto;padding-left:clamp(20px,5vw,70px);padding-right:clamp(20px,5vw,70px);background:#f3f4f5;color:#282b2f}
+body.route-home #marketAbout{border-top:0;padding-top:76px;padding-bottom:54px}
+body.route-home #legacyTestimonials{padding-top:48px;padding-bottom:48px;background:#e8eaec}
+body.route-home #legacyTestimonials h2,
+body.route-home #marketAbout h2,
+body.route-home #marketVisit h2{color:#292d31}
+body.route-home #marketAbout p,
+body.route-home #marketVisit p{color:#626970}
+body.route-home #marketVisit{padding-top:58px;padding-bottom:70px;background:#f8f8f8}
+body.route-home #marketVisit .legacy-info-grid{gap:24px}
+body.route-home #marketVisit .legacy-info-grid>div{padding:28px;background:#fff;border:1px solid #dfe2e5;box-shadow:0 12px 35px #1c252d0b}
+body.route-home #marketVisit a{color:#687783}
+body.route-home footer{background:#202428;color:#e9ecef}
 </style></head><body class="guest-view">
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a></nav><button id="login" class="btn alt hidden" aria-hidden="true" tabindex="-1">Login / Admin Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
 <main class="legacy-home">
