@@ -167,6 +167,10 @@ service cloud.firestore {
           )
           && request.resource.data.description is string
           && request.resource.data.description.size() <= 500
+          && request.resource.data.openingHours is string
+          && request.resource.data.openingHours.size() <= 180
+          && request.resource.data.facebookUrl is string
+          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
           && request.resource.data.updatedAt is timestamp
         );
 
