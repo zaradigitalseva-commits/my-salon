@@ -10,20 +10,5 @@ firebase.initializeApp({
   appId: "1:497426584536:web:c4695aa1caaa5988b318ad"
 });
 
+// Firebase displays background notification messages and opens the fcmOptions.link URL.
 firebase.messaging();
-
-self.addEventListener("notificationclick", event => {
-  event.notification.close();
-  const target = event.notification?.data?.FCM_MSG?.data?.url || "https://my-salon.vercel.app/#salons";
-  event.waitUntil((async () => {
-    const windows = await clients.matchAll({ type: "window", includeUncontrolled: true });
-    for (const client of windows) {
-      if ("focus" in client) {
-        await client.focus();
-        if ("navigate" in client) await client.navigate(target);
-        return;
-      }
-    }
-    if (clients.openWindow) await clients.openWindow(target);
-  })());
-});
