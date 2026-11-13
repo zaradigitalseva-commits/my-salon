@@ -69,6 +69,39 @@ body.route-contact #services,
 body.route-contact #register,
 body.route-contact #dashboard,
 body.route-contact #salonDetail{display:none!important}
+
+/* Premium full-screen silver hero — homepage only */
+body.route-home{background:#17191c;color:#f7f7f7}
+body.route-home .legacy-header{position:absolute;inset:0 0 auto;background:linear-gradient(180deg,rgba(12,14,17,.72),rgba(12,14,17,0));border:0;z-index:20}
+body.route-home .legacy-nav{max-width:1320px;min-height:76px;padding:16px 30px}
+body.route-home .legacy-nav .brand-name{color:#fff;background:none;text-shadow:0 2px 16px #0008}
+body.route-home .legacy-nav .navlinks a{color:#fff;text-shadow:0 2px 12px #000}
+body.route-home .legacy-home{max-width:none;padding:0}
+body.route-home #marketHome.legacy-hero{position:relative;display:flex;align-items:center;justify-content:flex-start;min-height:100svh;height:100svh;padding:120px clamp(24px,8vw,120px) 70px;overflow:hidden;background:#34383d}
+body.route-home .legacy-hero-image{position:absolute;inset:0;height:100%;width:100%;background:#34383d;z-index:0}
+body.route-home .legacy-hero-image:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,15,18,.78) 0%,rgba(18,21,25,.42) 48%,rgba(18,21,25,.12) 100%),linear-gradient(0deg,rgba(10,12,15,.3),transparent 45%)}
+body.route-home .legacy-hero-image img{width:100%;height:100%;object-fit:cover;object-position:center 38%;filter:saturate(.72) contrast(1.04)}
+body.route-home .legacy-hero-copy{position:relative;z-index:1;max-width:650px;padding:0;color:#fff}
+body.route-home .legacy-kicker{color:#e1e3e5;font-size:clamp(20px,2.2vw,30px);font-weight:500;letter-spacing:.18em;text-transform:uppercase}
+body.route-home .legacy-hero-copy h1{color:#fff;font-size:clamp(64px,10vw,124px);font-weight:600;letter-spacing:-.055em;line-height:.96;margin:18px 0;text-shadow:0 8px 32px #0006}
+body.route-home .legacy-subtitle{color:#e5e7e9;font-size:clamp(22px,3vw,38px);font-weight:300;letter-spacing:.04em}
+body.route-home .legacy-call{margin-top:34px;padding:16px 38px;background:linear-gradient(135deg,#f1f2f3,#aeb4ba);color:#202328;border:1px solid #ffffffa6;border-radius:3px;letter-spacing:.18em;box-shadow:0 12px 32px #0005}
+body.route-home .legacy-call:hover{background:#fff;transform:translateY(-2px)}
+body.route-home #marketAbout,body.route-home #legacyTestimonials,body.route-home #legacyContactPage,body.route-home #marketVisit,body.route-home #services{display:none!important}
+@media(max-width:760px){
+ body.route-home .legacy-nav{min-height:68px;padding:13px 15px;gap:10px}
+ body.route-home .legacy-nav .brand-name{font-size:22px}
+ body.route-home .legacy-nav .navlinks{gap:11px}
+ body.route-home .legacy-nav .navlinks a{font-size:11px}
+ body.route-home #marketHome.legacy-hero{min-height:100svh;height:100svh;padding:112px 22px 56px}
+ body.route-home .legacy-hero-image img{object-position:58% center}
+ body.route-home .legacy-hero-image:after{background:linear-gradient(90deg,rgba(12,15,18,.68),rgba(12,15,18,.2)),linear-gradient(0deg,rgba(10,12,15,.42),transparent 60%)}
+ body.route-home .legacy-hero-copy{max-width:100%;padding-top:15vh}
+ body.route-home .legacy-kicker{font-size:17px;letter-spacing:.13em}
+ body.route-home .legacy-hero-copy h1{font-size:clamp(54px,15vw,78px)}
+ body.route-home .legacy-subtitle{font-size:22px;max-width:280px}
+ body.route-home .legacy-call{margin-top:26px;padding:14px 30px}
+}
 </style></head><body class="guest-view">
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a></nav><button id="login" class="btn alt hidden" aria-hidden="true" tabindex="-1">Login / Admin Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
 <main class="legacy-home">
