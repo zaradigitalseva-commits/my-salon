@@ -70,7 +70,7 @@ service cloud.firestore {
           && resource.data.salonId == salonId
           && request.resource.data.salonId == resource.data.salonId
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'whatsapp', 'description', 'updatedAt'
+            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
           ])
           && request.resource.data.whatsapp is string
           && (
@@ -79,6 +79,10 @@ service cloud.firestore {
           )
           && request.resource.data.description is string
           && request.resource.data.description.size() <= 500
+          && request.resource.data.openingHours is string
+          && request.resource.data.openingHours.size() <= 180
+          && request.resource.data.facebookUrl is string
+          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
           && request.resource.data.updatedAt is timestamp
         );
     }
@@ -154,7 +158,7 @@ service cloud.firestore {
         || (
           ownsActiveSalon(salonId)
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'whatsapp', 'description', 'updatedAt'
+            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
           ])
           && request.resource.data.whatsapp is string
           && (
@@ -163,10 +167,39 @@ service cloud.firestore {
           )
           && request.resource.data.description is string
           && request.resource.data.description.size() <= 500
+          && request.resource.data.openingHours is string
+          && request.resource.data.openingHours.size() <= 180
+          && request.resource.data.facebookUrl is string
+          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
           && request.resource.data.updatedAt is timestamp
         );
 
       allow delete: if isAdmin();
+    }
+
+
+    match /salons/{salonId}/pushSubscriptions/{subscriptionId} {
+      // Owners may register multiple devices only for their own LIVE salon.
+      // The Admin SDK sender reads these tokens server-side; tokens are never public.
+      allow read: if isAdmin() || isSalonOwner(salonId);
+      allow create, update: if signedIn()
+        && isSalonOwner(salonId)
+        && salonIsLive(salonId)
+        && request.resource.data.keys().hasOnly([
+          'token', 'ownerUid', 'createdAt', 'updatedAt', 'userAgent'
+        ])
+        && request.resource.data.keys().hasAll(['token', 'ownerUid', 'updatedAt'])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.token is string
+        && request.resource.data.token.size() >= 20
+        && request.resource.data.token.size() <= 4096
+        && request.resource.data.updatedAt is timestamp
+        && (!('createdAt' in request.resource.data)
+          || request.resource.data.createdAt is timestamp)
+        && (!('userAgent' in request.resource.data)
+          || (request.resource.data.userAgent is string
+            && request.resource.data.userAgent.size() <= 180));
+      allow delete: if signedIn() && isSalonOwner(salonId);
     }
 
     match /salonServices/{serviceId} {
