@@ -34,7 +34,42 @@ body{background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
 .legacy-info-grid a{color:#9b5c79;text-decoration:none;font-weight:700}
 .legacy-testimonial{min-height:4px}
 @media(max-width:760px){.legacy-nav{padding:15px 14px}.legacy-nav .navlinks{display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end}.legacy-nav .navlinks a{font-size:12px}.legacy-home{padding:0 15px 30px}.legacy-hero{grid-template-columns:1fr;gap:22px;padding:28px 0 38px;min-height:0}.legacy-hero-image{height:300px;order:-1}.legacy-hero-copy h1{font-size:52px}.legacy-section{padding:34px 0}.legacy-info-grid{grid-template-columns:1fr;gap:20px}}
-.legacy-about-page-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:30px;align-items:center}.legacy-about-page-grid img,.legacy-gallery img{width:100%;height:320px;object-fit:cover}.legacy-gallery{max-width:480px}.legacy-contact-page iframe{width:100%;height:360px;border:0;margin-top:22px}.legacy-about-page-grid h3{font-size:24px}.route-about #marketHome,.route-about #marketAbout,.route-about #legacyTestimonials,.route-about #marketVisit,.route-about #salons,.route-about #services,.route-about #register,.route-about #dashboard,.route-about #salonDetail{display:none!important}.route-services #marketHome,.route-services #legacyAboutPage,.route-services #marketAbout,.route-services #legacyTestimonials,.route-services #marketVisit,.route-services #salons,.route-services #register,.route-services #dashboard,.route-services #salonDetail{display:none!important}.route-contact #marketHome,.route-contact #legacyAboutPage,.route-contact #marketAbout,.route-contact #legacyTestimonials,.route-contact #salons,.route-contact #services,.route-contact #register,.route-contact #dashboard,.route-contact #salonDetail{display:none!important}.route-home #legacyAboutPage{display:none!important}@media(max-width:760px){.legacy-about-page-grid{grid-template-columns:1fr}.legacy-about-page-grid img{height:260px}}</style></head><body class="guest-view">
+.legacy-about-page-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:30px;align-items:center}.legacy-about-page-grid img,.legacy-gallery img{width:100%;height:320px;object-fit:cover}.legacy-gallery{max-width:480px}.legacy-contact-page iframe{width:100%;height:360px;border:0;margin-top:22px}.legacy-about-page-grid h3{font-size:24px}.route-about #marketHome,.route-about #marketAbout,.route-about #legacyTestimonials,.route-about #marketVisit,.route-about #salons,.route-about #services,.route-about #register,.route-about #dashboard,.route-about #salonDetail{display:none!important}.route-services #marketHome,.route-services #legacyAboutPage,.route-services #marketAbout,.route-services #legacyTestimonials,.route-services #marketVisit,.route-services #salons,.route-services #register,.route-services #dashboard,.route-services #salonDetail{display:none!important}.route-contact #marketHome,.route-contact #legacyAboutPage,.route-contact #marketAbout,.route-contact #legacyTestimonials,.route-contact #salons,.route-contact #services,.route-contact #register,.route-contact #dashboard,.route-contact #salonDetail{display:none!important}.route-home #legacyAboutPage{display:none!important}@media(max-width:760px){.legacy-about-page-grid{grid-template-columns:1fr}.legacy-about-page-grid img{height:260px}}
+/* Correct page isolation: scope every section rule to the active route. */
+body.route-home #legacyAboutPage,
+body.route-home #legacyContactPage,
+body.route-home #marketVisit,
+body.route-home #services{display:none!important}
+body.route-about #marketHome,
+body.route-about #marketAbout,
+body.route-about #legacyTestimonials,
+body.route-about #legacyContactPage,
+body.route-about #marketVisit,
+body.route-about #salons,
+body.route-about #services,
+body.route-about #register,
+body.route-about #dashboard,
+body.route-about #salonDetail{display:none!important}
+body.route-services #marketHome,
+body.route-services #legacyAboutPage,
+body.route-services #marketAbout,
+body.route-services #legacyTestimonials,
+body.route-services #legacyContactPage,
+body.route-services #marketVisit,
+body.route-services #salons,
+body.route-services #register,
+body.route-services #dashboard,
+body.route-services #salonDetail{display:none!important}
+body.route-contact #marketHome,
+body.route-contact #legacyAboutPage,
+body.route-contact #marketAbout,
+body.route-contact #legacyTestimonials,
+body.route-contact #salons,
+body.route-contact #services,
+body.route-contact #register,
+body.route-contact #dashboard,
+body.route-contact #salonDetail{display:none!important}
+</style></head><body class="guest-view">
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a></nav><button id="login" class="btn alt hidden" aria-hidden="true" tabindex="-1">Login / Admin Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
 <main class="legacy-home">
 <section class="legacy-hero" id="marketHome"><div class="legacy-hero-copy"><p class="legacy-kicker">Beauty, Cosmetics</p><h1>My Salon</h1><p class="legacy-subtitle">and Personal Care</p><button class="legacy-call" id="callUsButton" type="button">CALL US</button></div><div class="legacy-hero-image"><img src="https://my-salon.vercel.app/images/image2.WebP" alt="woman" onerror="this.onerror=null;this.src='https://my-salon.vercel.app/images/image2.WebP'"></div></section>
