@@ -69,10 +69,38 @@ body.route-contact #services,
 body.route-contact #register,
 body.route-contact #dashboard,
 body.route-contact #salonDetail{display:none!important}
+
+/* Full-screen original MY SALON hero from the supplied website image */
+.legacy-header{background:#050505;border-bottom:0}
+.legacy-nav{min-height:80px;padding:14px 6.1%;max-width:none}
+.legacy-nav .brand-name{border:2px solid #fff;padding:7px 10px;color:#fff;font-size:23px;letter-spacing:.06em}
+.legacy-nav .navlinks a{color:#fff;font-size:18px;font-weight:500}
+.legacy-home{max-width:none;padding:0}
+.legacy-hero{position:relative;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);height:calc(100svh - 80px);padding:30px 20px;overflow:hidden;background:#282725}
+.legacy-hero-image{position:absolute;inset:0;height:100%;width:100%;z-index:0}
+.legacy-hero-image img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+.legacy-hero-overlay{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.42)}
+.legacy-hero-copy{position:relative;z-index:2;width:min(100%,760px);padding:20px;text-align:center;color:#fff}
+.legacy-hero-copy .legacy-kicker{display:none}
+.legacy-hero-copy h1{margin:0 0 46px;color:#fff;font-size:clamp(42px,5vw,58px);font-weight:500;letter-spacing:.48em;padding-left:.48em;line-height:1.2}
+.legacy-hero-copy .legacy-subtitle{color:#fff;font-size:clamp(17px,2vw,25px);font-weight:600;letter-spacing:.25em;line-height:1.25;text-transform:uppercase}
+.legacy-call{margin-top:clamp(60px,9vh,110px);padding:11px 12px;background:#d8e8ff;color:#111;border-radius:8px;font-size:18px;font-weight:500;letter-spacing:0}
+@media(max-width:760px){
+ .legacy-nav{min-height:70px;padding:12px 14px}
+ .legacy-nav .brand-name{font-size:18px}
+ .legacy-nav .navlinks{gap:10px}
+ .legacy-nav .navlinks a{font-size:11px}
+ .legacy-hero{height:calc(100svh - 70px);min-height:500px;padding:20px 12px}
+ .legacy-hero-image img{object-position:center center}
+ .legacy-hero-copy h1{font-size:clamp(30px,8vw,44px);letter-spacing:.32em;padding-left:.32em;margin-bottom:35px}
+ .legacy-hero-copy .legacy-subtitle{font-size:clamp(14px,3.5vw,19px);letter-spacing:.16em}
+ .legacy-call{margin-top:70px;font-size:16px}
+}
+
 </style></head><body class="guest-view">
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a></nav><button id="login" class="btn alt hidden" aria-hidden="true" tabindex="-1">Login / Admin Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
 <main class="legacy-home">
-<section class="legacy-hero" id="marketHome"><div class="legacy-hero-copy"><p class="legacy-kicker">Beauty, Cosmetics</p><h1>My Salon</h1><p class="legacy-subtitle">and Personal Care</p><button class="legacy-call" id="callUsButton" type="button">CALL US</button></div><div class="legacy-hero-image"><img src="https://my-salon.vercel.app/images/image2.WebP" alt="woman" onerror="this.onerror=null;this.src='https://my-salon.vercel.app/images/image2.WebP'"></div></section>
+<section class="legacy-hero" id="marketHome"><div class="legacy-hero-image"><img src="https://my-salon.vercel.app/images/image2.WebP" alt="MY SALON full-screen beauty banner" onerror="this.onerror=null;this.src='https://my-salon.vercel.app/images/image2.WebP'"></div><div class="legacy-hero-overlay" aria-hidden="true"></div><div class="legacy-hero-copy"><h1>MY SALON</h1><p class="legacy-subtitle">BEAUTY, COSMETICS<br>AND PERSONAL CARE</p><button class="legacy-call" id="callUsButton" type="button">CALL US</button></div></section>
 <section class="legacy-section legacy-about-page" id="legacyAboutPage"><h2>About Us</h2><div class="legacy-about-page-grid"><img src="https://my-salon.vercel.app/images/image7.jpeg" alt="about us"><div><h3>Our Values</h3><p>We believe in beautiful, healthy hair for all. That is why we provide customized services to meet your unique needs. Our skilled stylists are dedicated to delivering excellent care and ensuring your satisfaction.</p><p>We focus on exceptional hair care services at our salon. With premium products and advanced techniques, we aim to enhance the look and feel of your hair. Our stylists listen to your preferences and work with you to achieve your desired look.</p><a class="shop-contact-link" href="/services">Services</a></div></div><h2 style="margin-top:42px">Gallery</h2><div class="legacy-gallery"><img src="https://my-salon.vercel.app/images/image7.jpeg" alt="Salon gallery"></div></section><section class="legacy-section legacy-about" id="marketAbout"><h2>Our success secret</h2><p>We hold the belief that each individual deserves to possess luscious and healthy hair, which is why we've created a variety of hair care services that cater to the distinct requirements and preferences of every client. Our proficient team of stylists are committed to providing top-notch care and attention, ensuring that you receive the finest quality service.</p></section>
 <section class="legacy-section" id="legacyTestimonials"><h2>Testimonials</h2><div class="legacy-testimonial"></div></section>
 <section class="legacy-section legacy-contact-page" id="legacyContactPage"><h2>Contact Us</h2><div class="legacy-info-grid"><div><h3>Call us:</h3><p><a href="tel:02085686266">020 8568 6266</a></p><p><a href="https://www.facebook.com/Mysalonteam/?locale=en_GB" target="_blank" rel="noopener noreferrer">My Salon</a></p></div><div><h3>Address</h3><p>18A St Johns Rd, Isleworth TW7 6NW</p></div></div><iframe title="My Salon location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d79524.69414953148!2d-0.407908943057696!3d51.47382163975427!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760d02f5660a19%3A0x4899f6a82bd40d96!2sMy%20Salon!5e0!3m2!1sen!2suk!4v1687372276734!5m2!1sen!2suk" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></section><section class="legacy-section" id="marketVisit"><h2>Visit Us Today</h2><div class="legacy-info-grid"><div><h2>Opening Hours</h2><p>Monday to Saturday - 9am to 6pm</p><p>Sunday - Closed</p></div><div id="marketContact"><h2>Get In Touch</h2><p>18A St John's Rd, Isleworth TW7 6NW</p><p><a href="tel:02085686266">020 8568 6266</a></p><p><a href="https://www.facebook.com/Mysalonteam/?locale=en_GB" target="_blank" rel="noopener noreferrer">My Salon</a></p></div></div></section>
