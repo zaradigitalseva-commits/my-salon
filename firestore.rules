@@ -127,84 +127,13 @@ service cloud.firestore {
         && (
           request.resource.data.imageUrl == ''
           || request.resource.data.imageUrl.matches('^https://.+')
-          || (request.resource.data.imageUrl.size() <= 140000
-            && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}
-        && request.resource.data.address.size() <= 200
-        && request.resource.data.createdAt is timestamp
-        && request.resource.data.updatedAt is timestamp;
-
-      allow update: if isAdmin()
-        // First registration payment can be submitted again after rejection.
-        || (
-          isSalonOwner(salonId)
-          && resource.data.status in ['PENDING_PAYMENT', 'PENDING_REVIEW', 'REJECTED']
-          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
-          ])
-          && validPaymentSubmission()
-        )
-        // Renewal can be submitted even after the salon's expiry date.
-        || (
-          isSalonOwner(salonId)
-          && resource.data.status in ['LIVE', 'ACTIVE', 'APPROVED']
-          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
-          ])
-          && validPaymentSubmission()
-        )
-        // Profile fields cannot alter payment status, plan price, or proof.
-        || (
-          ownsActiveSalon(salonId)
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
-          ])
-          && request.resource.data.whatsapp is string
-          && (
-            request.resource.data.whatsapp == ''
-            || request.resource.data.whatsapp.matches('^[0-9]{10,15}$')
+          || (
+            request.resource.data.imageUrl.size() <= 140000
+            && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}$')
           )
-          && request.resource.data.description is string
-          && request.resource.data.description.size() <= 500
-          && request.resource.data.openingHours is string
-          && request.resource.data.openingHours.size() <= 180
-          && request.resource.data.facebookUrl is string
-          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
-          && request.resource.data.updatedAt is timestamp
-        );
-
-      allow delete: if isAdmin();
-    }
-
-    match /salonServices/{serviceId} {
-      allow read: if isAdmin()
-        || ownerOfData()
-        || (
-          resource.data.active == true
-          && salonIsLive(resource.data.salonId)
-        );
-
-      allow create: if signedIn()
-        && ownsActiveSalon(request.resource.data.salonId)
-        && request.resource.data.keys().hasOnly([
-          'salonId', 'ownerUid', 'name', 'price', 'description',
-          'active', 'createdAt'
-        ])
-        && request.resource.data.keys().hasAll([
-          'salonId', 'ownerUid', 'name', 'price', 'description',
-          'active', 'createdAt'
-        ])
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.name is string
-        && request.resource.data.name.size() > 0
-        && request.resource.data.name.size() <= 100
-        && request.resource.data.price is number
-        && request.resource.data.price >= 0
-        && request.resource.data.price <= 10000000
-        && request.resource.data.description is string
-        && request.resource.data.description.size() <= 500
-        && request.resource.data.active == true
+        )
+        && request.resource.data.address is string
+        && request.resource.data.address.size() <= 200
         && request.resource.data.createdAt is timestamp;
 
       allow update: if isAdmin()
