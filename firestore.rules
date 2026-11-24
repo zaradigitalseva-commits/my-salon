@@ -389,6 +389,11 @@ service cloud.firestore {
         && request.resource.data.discount >= 0
         && request.resource.data.discount <= request.resource.data.amount
         && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+        && (!('customerUid' in request.resource.data)
+          || request.resource.data.customerUid == null
+          || request.resource.data.customerUid is string)
+        && (!('updatedAt' in request.resource.data)
+          || request.resource.data.updatedAt is timestamp)
         && request.resource.data.createdAt is timestamp;
 
       allow read: if isAdmin()
