@@ -11,6 +11,10 @@
     {
       "source": "/contact",
       "destination": "/"
+    },
+    {
+      "source": "/salons",
+      "destination": "/"
     }
   ]
 }
