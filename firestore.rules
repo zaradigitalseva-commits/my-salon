@@ -129,6 +129,603 @@ service cloud.firestore {
           || request.resource.data.imageUrl.matches('^https://.+')
           || (request.resource.data.imageUrl.size() <= 140000
             && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}
+        && request.resource.data.address.size() <= 200
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+
+      allow update: if isAdmin()
+        // First registration payment can be submitted again after rejection.
+        || (
+          isSalonOwner(salonId)
+          && resource.data.status in ['PENDING_PAYMENT', 'PENDING_REVIEW', 'REJECTED']
+          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
+          ])
+          && validPaymentSubmission()
+        )
+        // Renewal can be submitted even after the salon's expiry date.
+        || (
+          isSalonOwner(salonId)
+          && resource.data.status in ['LIVE', 'ACTIVE', 'APPROVED']
+          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
+          ])
+          && validPaymentSubmission()
+        )
+        // Profile fields cannot alter payment status, plan price, or proof.
+        || (
+          ownsActiveSalon(salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
+          ])
+          && request.resource.data.whatsapp is string
+          && (
+            request.resource.data.whatsapp == ''
+            || request.resource.data.whatsapp.matches('^[0-9]{10,15}$')
+          )
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 500
+          && request.resource.data.openingHours is string
+          && request.resource.data.openingHours.size() <= 180
+          && request.resource.data.facebookUrl is string
+          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
+          && request.resource.data.updatedAt is timestamp
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /salonServices/{serviceId} {
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (
+          resource.data.active == true
+          && salonIsLive(resource.data.salonId)
+        );
+
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'name', 'price', 'description',
+          'active', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'name', 'price', 'description',
+          'active', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.price <= 10000000
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 500
+        && request.resource.data.active == true
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'price', 'description', 'active', 'updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.price is number
+          && request.resource.data.price >= 0
+          && request.resource.data.price <= 10000000
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 500
+          && request.resource.data.active is bool
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /salonOffers/{offerId} {
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (
+          resource.data.active == true
+          && salonIsLive(resource.data.salonId)
+        );
+
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'title', 'details', 'active', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'title', 'details', 'active', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.details is string
+        && request.resource.data.details.size() <= 500
+        && request.resource.data.active == true
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'title', 'details', 'active', 'updatedAt'
+          ])
+          && request.resource.data.title is string
+          && request.resource.data.title.size() > 0
+          && request.resource.data.title.size() <= 120
+          && request.resource.data.details is string
+          && request.resource.data.details.size() <= 500
+          && request.resource.data.active is bool
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /appointments/{appointmentId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'salonName', 'serviceId', 'serviceName', 'price',
+          'customerUid', 'customerName', 'customerPhone', 'dateText',
+          'status', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'salonName', 'serviceId', 'serviceName', 'price',
+          'customerUid', 'customerName', 'customerPhone', 'dateText',
+          'status', 'createdAt'
+        ])
+        && request.resource.data.customerUid == request.auth.uid
+        && request.resource.data.salonId is string
+        && salonIsLive(request.resource.data.salonId)
+        && request.resource.data.salonName is string
+        && request.resource.data.salonName == get(salonPath(request.resource.data.salonId)).data.name
+        && request.resource.data.serviceId is string
+        && exists(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId))
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.salonId == request.resource.data.salonId
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.active == true
+        && request.resource.data.serviceName == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.name
+        && request.resource.data.price == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.price
+        && request.resource.data.customerName is string
+        && request.resource.data.customerName.size() <= 100
+        && request.resource.data.customerPhone is string
+        && request.resource.data.customerPhone.matches('^[0-9]{10}$')
+        && request.resource.data.dateText is string
+        && request.resource.data.dateText.size() >= 5
+        && request.resource.data.dateText.size() <= 80
+        && request.resource.data.status == 'PENDING'
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.customerUid == request.auth.uid)
+        || isSalonOwner(resource.data.salonId);
+
+      allow update: if isAdmin()
+        || (
+          isSalonOwner(resource.data.salonId)
+          && salonIsLive(resource.data.salonId)
+          && resource.data.status == 'PENDING'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'updatedAt'
+          ])
+          && request.resource.data.status in ['CONFIRMED', 'REJECTED']
+          && request.resource.data.updatedAt is timestamp
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /salonCustomers/{customerId} {
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'name', 'phone', 'customerUid',
+          'visitCount', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'name', 'phone', 'customerUid',
+          'visitCount', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.phone is string
+        && request.resource.data.phone.matches('^[0-9]{10}$')
+        && request.resource.data.customerUid == null
+        && request.resource.data.visitCount is int
+        && request.resource.data.visitCount >= 0
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (signedIn() && resource.data.customerUid == request.auth.uid);
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'visitCount', 'updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 80
+          && request.resource.data.visitCount is int
+          && request.resource.data.visitCount >= 0
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /salonVisits/{visitId} {
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'service', 'amount', 'discount',
+          'paidAmount', 'customerUid', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'service', 'amount', 'discount',
+          'paidAmount', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() > 0
+        && request.resource.data.amount is number
+        && request.resource.data.amount >= 0
+        && request.resource.data.discount is number
+        && request.resource.data.discount >= 0
+        && request.resource.data.discount <= request.resource.data.amount
+        && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (signedIn() && resource.data.customerUid == request.auth.uid);
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'service', 'amount', 'discount', 'paidAmount', 'customerUid', 'updatedAt'
+          ])
+          && request.resource.data['service'] is string
+          && request.resource.data['service'].size() > 0
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0
+          && request.resource.data.discount is number
+          && request.resource.data.discount >= 0
+          && request.resource.data.discount <= request.resource.data.amount
+          && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+          && (!('customerUid' in request.resource.data)
+            || request.resource.data.customerUid == null
+            || request.resource.data.customerUid is string)
+          && (!('updatedAt' in request.resource.data)
+            || request.resource.data.updatedAt is timestamp)
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}))
+        )
+        && request.resource.data.address is string
+        && request.resource.data.address.size() <= 200
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+
+      allow update: if isAdmin()
+        // First registration payment can be submitted again after rejection.
+        || (
+          isSalonOwner(salonId)
+          && resource.data.status in ['PENDING_PAYMENT', 'PENDING_REVIEW', 'REJECTED']
+          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
+          ])
+          && validPaymentSubmission()
+        )
+        // Renewal can be submitted even after the salon's expiry date.
+        || (
+          isSalonOwner(salonId)
+          && resource.data.status in ['LIVE', 'ACTIVE', 'APPROVED']
+          && resource.data.paymentStatus != 'SUBMITTED_FOR_REVIEW'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'utr', 'paymentProofUrl', 'paymentStatus', 'updatedAt'
+          ])
+          && validPaymentSubmission()
+        )
+        // Profile fields cannot alter payment status, plan price, or proof.
+        || (
+          ownsActiveSalon(salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
+          ])
+          && request.resource.data.whatsapp is string
+          && (
+            request.resource.data.whatsapp == ''
+            || request.resource.data.whatsapp.matches('^[0-9]{10,15}$')
+          )
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 500
+          && request.resource.data.openingHours is string
+          && request.resource.data.openingHours.size() <= 180
+          && request.resource.data.facebookUrl is string
+          && (request.resource.data.facebookUrl == '' || request.resource.data.facebookUrl.matches('^https://.+'))
+          && request.resource.data.updatedAt is timestamp
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /salonServices/{serviceId} {
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (
+          resource.data.active == true
+          && salonIsLive(resource.data.salonId)
+        );
+
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'name', 'price', 'description',
+          'active', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'name', 'price', 'description',
+          'active', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.price <= 10000000
+        && request.resource.data.description is string
+        && request.resource.data.description.size() <= 500
+        && request.resource.data.active == true
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'price', 'description', 'active', 'updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.price is number
+          && request.resource.data.price >= 0
+          && request.resource.data.price <= 10000000
+          && request.resource.data.description is string
+          && request.resource.data.description.size() <= 500
+          && request.resource.data.active is bool
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /salonOffers/{offerId} {
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (
+          resource.data.active == true
+          && salonIsLive(resource.data.salonId)
+        );
+
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'title', 'details', 'active', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'title', 'details', 'active', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.details is string
+        && request.resource.data.details.size() <= 500
+        && request.resource.data.active == true
+        && request.resource.data.createdAt is timestamp;
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'title', 'details', 'active', 'updatedAt'
+          ])
+          && request.resource.data.title is string
+          && request.resource.data.title.size() > 0
+          && request.resource.data.title.size() <= 120
+          && request.resource.data.details is string
+          && request.resource.data.details.size() <= 500
+          && request.resource.data.active is bool
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /appointments/{appointmentId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'salonName', 'serviceId', 'serviceName', 'price',
+          'customerUid', 'customerName', 'customerPhone', 'dateText',
+          'status', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'salonName', 'serviceId', 'serviceName', 'price',
+          'customerUid', 'customerName', 'customerPhone', 'dateText',
+          'status', 'createdAt'
+        ])
+        && request.resource.data.customerUid == request.auth.uid
+        && request.resource.data.salonId is string
+        && salonIsLive(request.resource.data.salonId)
+        && request.resource.data.salonName is string
+        && request.resource.data.salonName == get(salonPath(request.resource.data.salonId)).data.name
+        && request.resource.data.serviceId is string
+        && exists(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId))
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.salonId == request.resource.data.salonId
+        && get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.active == true
+        && request.resource.data.serviceName == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.name
+        && request.resource.data.price == get(/databases/$(database)/documents/salonServices/$(request.resource.data.serviceId)).data.price
+        && request.resource.data.customerName is string
+        && request.resource.data.customerName.size() <= 100
+        && request.resource.data.customerPhone is string
+        && request.resource.data.customerPhone.matches('^[0-9]{10}$')
+        && request.resource.data.dateText is string
+        && request.resource.data.dateText.size() >= 5
+        && request.resource.data.dateText.size() <= 80
+        && request.resource.data.status == 'PENDING'
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.customerUid == request.auth.uid)
+        || isSalonOwner(resource.data.salonId);
+
+      allow update: if isAdmin()
+        || (
+          isSalonOwner(resource.data.salonId)
+          && salonIsLive(resource.data.salonId)
+          && resource.data.status == 'PENDING'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'status', 'updatedAt'
+          ])
+          && request.resource.data.status in ['CONFIRMED', 'REJECTED']
+          && request.resource.data.updatedAt is timestamp
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    match /salonCustomers/{customerId} {
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'name', 'phone', 'customerUid',
+          'visitCount', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'name', 'phone', 'customerUid',
+          'visitCount', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.phone is string
+        && request.resource.data.phone.matches('^[0-9]{10}$')
+        && request.resource.data.customerUid == null
+        && request.resource.data.visitCount is int
+        && request.resource.data.visitCount >= 0
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (signedIn() && resource.data.customerUid == request.auth.uid);
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'name', 'visitCount', 'updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 80
+          && request.resource.data.visitCount is int
+          && request.resource.data.visitCount >= 0
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /salonVisits/{visitId} {
+      allow create: if signedIn()
+        && ownsActiveSalon(request.resource.data.salonId)
+        && request.resource.data.keys().hasOnly([
+          'salonId', 'ownerUid', 'service', 'amount', 'discount',
+          'paidAmount', 'customerUid', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'salonId', 'ownerUid', 'service', 'amount', 'discount',
+          'paidAmount', 'createdAt'
+        ])
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() > 0
+        && request.resource.data.amount is number
+        && request.resource.data.amount >= 0
+        && request.resource.data.discount is number
+        && request.resource.data.discount >= 0
+        && request.resource.data.discount <= request.resource.data.amount
+        && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+        && request.resource.data.createdAt is timestamp;
+
+      allow read: if isAdmin()
+        || ownerOfData()
+        || (signedIn() && resource.data.customerUid == request.auth.uid);
+
+      allow update: if isAdmin()
+        || (
+          ownerOfData()
+          && ownsActiveSalon(resource.data.salonId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'service', 'amount', 'discount', 'paidAmount', 'customerUid', 'updatedAt'
+          ])
+          && request.resource.data['service'] is string
+          && request.resource.data['service'].size() > 0
+          && request.resource.data.amount is number
+          && request.resource.data.amount >= 0
+          && request.resource.data.discount is number
+          && request.resource.data.discount >= 0
+          && request.resource.data.discount <= request.resource.data.amount
+          && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+          && (!('customerUid' in request.resource.data)
+            || request.resource.data.customerUid == null
+            || request.resource.data.customerUid is string)
+          && (!('updatedAt' in request.resource.data)
+            || request.resource.data.updatedAt is timestamp)
+        );
+
+      allow delete: if isAdmin()
+        || (ownerOfData() && ownsActiveSalon(resource.data.salonId));
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}))
+        )
         && request.resource.data.address is string
         && request.resource.data.address.size() <= 200
         && request.resource.data.createdAt is timestamp
