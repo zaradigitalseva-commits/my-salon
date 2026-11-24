@@ -120,6 +120,18 @@ body.route-contact #salonDetail{display:none!important}
 .legacy-about-page-grid{display:block;max-width:820px}
 .legacy-gallery{display:none}
 @media(max-width:760px){.legacy-feature-grid{grid-template-columns:1fr;gap:12px}.legacy-feature-grid article{min-height:0;padding:20px}}
+
+/* CALL US CTA motion and dedicated salon directory route */
+@keyframes callUsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+#callUsButton{animation:callUsFloat 1.7s ease-in-out infinite;will-change:transform}
+#callUsButton:hover{animation-play-state:paused;filter:brightness(1.08)}
+#callUsButton:focus-visible{outline:3px solid #fff;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){#callUsButton{animation:none}}
+body.route-salons #marketHome,body.route-salons #legacyAboutPage,body.route-salons #marketAbout,body.route-salons #legacyTestimonials,body.route-salons #legacyContactPage,body.route-salons #marketVisit,body.route-salons #services,body.route-salons #register,body.route-salons #dashboard,body.route-salons #salonDetail{display:none!important}
+body.route-salons #salons{display:block!important;max-width:1200px;margin:0 auto;padding:42px 18px 60px}
+body.route-salons #salons .section-title h2{font-size:clamp(28px,4vw,40px)}
+body.route-salons #salons .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:760px){body.route-salons #salons{padding:28px 14px 42px}body.route-salons #salons .grid{grid-template-columns:1fr}}
 </style></head><body class="guest-view">
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a></nav><button id="login" class="btn alt hidden" aria-hidden="true" tabindex="-1">Login / Admin Login</button><button id="dashBtn" class="btn hidden">Dashboard</button></div></header>
 <main class="legacy-home">
@@ -428,9 +440,9 @@ window.deleteService=async id=>{try{await db.collection("salonServices").doc(id)
 window.toggleOffer=async(id,active)=>{try{await db.collection("salonOffers").doc(id).update({active,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()}catch(err){alert("Offer update नहीं हुआ: "+err.message)}};
 window.bookingStatus=async(id,status)=>{await db.collection("appointments").doc(id).update({status,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});showDashboard()};
 async function customerDashboard(){const s=await db.collection("appointments").where("customerUid","==",user.uid).limit(100).get();$("dashBody").innerHTML='<div class="panel"><h3>My Appointments / मेरी बुकिंग</h3><div class="list">'+s.docs.map(x=>{const d=x.data();return '<div class="item"><b>'+esc(d.salonName)+'</b><p>'+esc(d.serviceName)+' · '+money(d.price)+'</p><p>'+esc(d.dateText)+' · '+esc(d.status)+'</p></div>'}).join("")+'</div></div><p class="muted">Customer records और visit history केवल संबंधित salon की अनुमति से दिखाई जाएगी।</p>'}
-function applyPublicRoute(){const path=location.pathname.replace(/\\/+$/,'')||'/';document.body.classList.remove('route-home','route-about','route-services','route-contact');const page=path==='/about'?'about':path==='/services'?'services':path==='/contact'?'contact':'home';document.body.classList.add('route-'+page);document.title=page==='home'?'MY SALON | Beauty • Style • Care':page==='about'?'About Us | MY SALON':page==='services'?'Our Services | MY SALON':'Contact Us | MY SALON';}
+function applyPublicRoute(){const path=location.pathname.replace(/\\/+$/,'')||'/';document.body.classList.remove('route-home','route-about','route-services','route-contact','route-salons');const page=path==='/about'?'about':path==='/services'?'services':path==='/contact'?'contact':path==='/salons'?'salons':'home';document.body.classList.add('route-'+page);document.title=page==='home'?'MY SALON | Beauty • Style • Care':page==='about'?'About Us | MY SALON':page==='services'?'Our Services | MY SALON':page==='contact'?'Contact Us | MY SALON':'All Salons | MY SALON';}
 const menuToggle=document.getElementById("menuToggle"),mainNav=document.getElementById("mainNav");if(menuToggle&&mainNav){menuToggle.addEventListener("click",()=>{const opened=mainNav.classList.toggle("is-open");menuToggle.setAttribute("aria-expanded",String(opened));menuToggle.setAttribute("aria-label",opened?"Close menu":"Open menu");menuToggle.textContent=opened?"×":"☰";});mainNav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{mainNav.classList.remove("is-open");menuToggle.setAttribute("aria-expanded","false");menuToggle.setAttribute("aria-label","Open menu");menuToggle.textContent="☰";}));}document.querySelectorAll('#mainNav a').forEach(a=>a.addEventListener('click',e=>{const u=new URL(a.href,location.origin);if(u.origin!==location.origin)return;e.preventDefault();history.pushState({},'',u.pathname);applyPublicRoute();window.scrollTo({top:0,behavior:'smooth'});}));window.addEventListener('popstate',applyPublicRoute);applyPublicRoute();
 loadSalons();
 const callUsButton=$("callUsButton");
-if(callUsButton)callUsButton.addEventListener("click",()=>{$("salons").scrollIntoView({behavior:"smooth",block:"start"});});
+if(callUsButton)callUsButton.addEventListener("click",()=>{if(location.pathname!=="/salons")history.pushState({}, "", "/salons");applyPublicRoute();loadSalons();window.scrollTo({top:0,behavior:"smooth"});});
 </script></body></html>
