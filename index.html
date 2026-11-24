@@ -142,6 +142,21 @@ body.route-salons #salons .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .legacy-nav #mainNav #login{background:#fff;color:#251b24;border:1px solid #b77c91}
 .legacy-nav #mainNav #dashBtn{background:#b77c91;color:#fff;border:1px solid #b77c91}
 @media(max-width:760px){.legacy-nav .navlinks.is-open{align-items:stretch}.legacy-nav #mainNav #login,.legacy-nav #mainNav #dashBtn{width:100%;justify-content:center;margin-top:8px;font-size:12px;padding:8px 10px;min-height:34px}}
+
+/* All header navigation stays inside the menu on desktop and mobile */
+.legacy-nav{position:relative}
+.legacy-nav .menu-toggle{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;min-width:42px;min-height:38px}
+.legacy-nav #mainNav{display:none;position:absolute;top:100%;right:6.1%;left:auto;z-index:30;width:min(280px,calc(100vw - 28px));padding:10px;background:#080808;border:1px solid #ffffff30;box-shadow:0 12px 28px #0003;flex-direction:column;align-items:stretch;gap:0}
+.legacy-nav #mainNav.is-open{display:flex}
+.legacy-nav #mainNav>a{display:block;padding:12px 10px;color:#fff;font-size:15px;border-bottom:1px solid #ffffff20}
+.legacy-nav #mainNav>a:last-of-type{border-bottom:1px solid #ffffff20}
+.legacy-nav #mainNav #login,.legacy-nav #mainNav #dashBtn{display:flex;width:100%;min-height:30px;margin:8px 0 0;padding:6px 9px;font-size:11px;line-height:1.2;border-radius:4px;justify-content:center;white-space:nowrap}
+.legacy-nav #mainNav #login{background:#fff;color:#251b24;border:1px solid #b77c91}
+.legacy-nav #mainNav #dashBtn{background:#b77c91;color:#fff;border:1px solid #b77c91}
+@media(max-width:760px){
+ .legacy-nav #mainNav{right:0;left:auto;width:min(280px,calc(100vw - 28px))}
+ .legacy-nav #mainNav>a{font-size:14px;padding:11px 9px}
+}
 </style></head><body class="guest-view"><script>const routePath=location.pathname.replace(/\/+$/,"")||"/";if(routePath==="/salons"){document.body.classList.add("route-salons");document.title="All Salons | MY SALON";}else if(routePath==="/register"){document.body.classList.add("route-register");document.title="Register Your Salon | MY SALON";}</script>
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a><button id="login" class="btn alt" type="button">Google Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
 <main class="legacy-home">
