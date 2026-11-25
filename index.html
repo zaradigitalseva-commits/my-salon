@@ -279,6 +279,14 @@ body>footer.site-footer{flex:0 0 auto;width:100%;margin-top:auto;position:relati
 body.route-admin>main.legacy-home{min-height:calc(100vh - 150px);}
 body.route-admin #dashboard{min-height:0!important;margin:28px auto 36px!important;}
 @media(max-width:760px){body.route-admin>main.legacy-home{min-height:calc(100vh - 135px);}}
+
+/* Floating back-to-top arrow on every page; hidden until the visitor scrolls down. */
+#scrollToTopButton{position:fixed;right:20px;bottom:22px;z-index:9999;width:48px;height:48px;border:0;border-radius:50%;display:grid;place-items:center;background:#176b91;color:#fff;font-size:26px;font-weight:800;line-height:1;box-shadow:0 6px 20px #123b5240;cursor:pointer;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(10px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+#scrollToTopButton.is-visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+#scrollToTopButton:hover{background:#105675;transform:translateY(-3px)}
+#scrollToTopButton:focus-visible{outline:3px solid #87ceeb;outline-offset:4px}
+@media(max-width:600px){#scrollToTopButton{right:14px;bottom:16px;width:44px;height:44px;font-size:24px}}
+@media(prefers-reduced-motion:reduce){#scrollToTopButton{transition:none}}
 </style></head><body class="guest-view"><script>const routePath=location.pathname.replace(/\/+$/,"")||"/";if(routePath==="/"){document.body.classList.add("route-home");document.title="MY SALON | Beauty, Cosmetics and Personal Care";}else if(routePath==="/about"){document.body.classList.add("route-about");document.title="About MY SALON";}else if(routePath==="/services"){document.body.classList.add("route-services");document.title="Services | MY SALON";}else if(routePath==="/contact"){document.body.classList.add("route-contact");document.title="Contact | MY SALON";}else if(routePath==="/salons"){document.body.classList.add("route-salons");document.title="All Salons | MY SALON";}else if(routePath==="/register"){document.body.classList.add("route-register");document.title="Register Your Salon | MY SALON";}else if(routePath==="/admin"){document.body.classList.add("route-admin");document.title="Admin Dashboard | MY SALON";}else if(routePath==="/privacy-policy"){document.body.classList.add("route-privacy");document.title="Privacy Policy | MY SALON";}</script>
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><a class="global-home-link" href="/" aria-label="Go to Home">⌂ Home</a><div class="language-switcher"><label for="siteLanguage">Language</label><select id="siteLanguage" aria-label="Change website language" onchange="changeSiteLanguage(this.value)"><option value="">Select</option><option value="hi">हिन्दी</option><option value="en">English</option></select></div><div id="google_translate_element" aria-hidden="true"></div><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/register">Register Your Salon</a><button id="login" class="btn alt" type="button">Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
 <main class="legacy-home">
@@ -727,5 +735,24 @@ window.addEventListener('load',function(){
   });
   observer.observe(document.documentElement,{childList:true,subtree:true});
 });
+</script>
+
+<button id="scrollToTopButton" type="button" aria-label="ऊपर जाएँ" title="ऊपर जाएँ">↑</button>
+<script>
+(function(){
+ const button=document.getElementById('scrollToTopButton');
+ if(!button)return;
+ let scheduled=false;
+ function updateScrollButton(){
+  const shouldShow=window.scrollY>240;
+  button.classList.toggle('is-visible',shouldShow);
+  button.setAttribute('aria-hidden',String(!shouldShow));
+  scheduled=false;
+ }
+ window.addEventListener('scroll',function(){if(!scheduled){scheduled=true;window.requestAnimationFrame(updateScrollButton)}},{passive:true});
+ window.addEventListener('pageshow',updateScrollButton);
+ button.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+ updateScrollButton();
+})();
 </script>
 </body></html>
