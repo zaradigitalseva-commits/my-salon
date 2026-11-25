@@ -269,6 +269,16 @@ footer.site-footer{display:block!important;background:var(--salon-sky)!important
 .route-admin .admin-login-panel h3{color:#164f6b}
 .route-admin .admin-login-panel .btn{background:#176b91;color:#fff}
 @media(max-width:760px){.legacy-nav .global-home-link{font-size:12px}.language-switcher{margin-left:8px}}
+
+/* Keep the top header at the top and the sky-blue footer at the bottom, never adjacent. */
+html,body{min-height:100%;}
+body{min-height:100vh;display:flex;flex-direction:column;}
+body>header.legacy-header{flex:0 0 auto;width:100%;}
+body>main.legacy-home{flex:1 0 auto;width:100%;}
+body>footer.site-footer{flex:0 0 auto;width:100%;margin-top:auto;position:relative;clear:both;}
+body.route-admin>main.legacy-home{min-height:calc(100vh - 150px);}
+body.route-admin #dashboard{min-height:0!important;margin:28px auto 36px!important;}
+@media(max-width:760px){body.route-admin>main.legacy-home{min-height:calc(100vh - 135px);}}
 </style></head><body class="guest-view"><script>const routePath=location.pathname.replace(/\/+$/,"")||"/";if(routePath==="/"){document.body.classList.add("route-home");document.title="MY SALON | Beauty, Cosmetics and Personal Care";}else if(routePath==="/about"){document.body.classList.add("route-about");document.title="About MY SALON";}else if(routePath==="/services"){document.body.classList.add("route-services");document.title="Services | MY SALON";}else if(routePath==="/contact"){document.body.classList.add("route-contact");document.title="Contact | MY SALON";}else if(routePath==="/salons"){document.body.classList.add("route-salons");document.title="All Salons | MY SALON";}else if(routePath==="/register"){document.body.classList.add("route-register");document.title="Register Your Salon | MY SALON";}else if(routePath==="/admin"){document.body.classList.add("route-admin");document.title="Admin Dashboard | MY SALON";}else if(routePath==="/privacy-policy"){document.body.classList.add("route-privacy");document.title="Privacy Policy | MY SALON";}</script>
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><a class="global-home-link" href="/" aria-label="Go to Home">⌂ Home</a><div class="language-switcher"><label for="siteLanguage">Language</label><select id="siteLanguage" aria-label="Change website language" onchange="changeSiteLanguage(this.value)"><option value="">Select</option><option value="hi">हिन्दी</option><option value="en">English</option></select></div><div id="google_translate_element" aria-hidden="true"></div><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/register">Register Your Salon</a><button id="login" class="btn alt" type="button">Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
 <main class="legacy-home">
