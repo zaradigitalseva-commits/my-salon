@@ -457,12 +457,12 @@ async function loadSalons(){try{
  $("nearbySalonList").innerHTML="";
  if(userCoords){
   $("nearbyStatus").textContent="आपकी लोकेशन से सबसे नज़दीकी LIVE सैलून पहले दिखाए गए हैं।";
-  await plotSalonsOnMap(docs);
+  plotSalonsOnMap(docs).catch(err=>console.warn("Salon map update failed",err));
   const nearby=(window.salonLocated||[]).filter(item=>!q||["name","area","city","state"].some(k=>String(item.doc.data()[k]||"").toLowerCase().includes(q)));
   $("nearbySalonList").innerHTML=nearby.map(item=>salonCard(item.doc,item.distance)).join("")||'<p class="muted">आपकी लोकेशन के आधार पर कोई नज़दीकी सैलून नहीं मिला।</p>';
  }else{
   $("nearbyStatus").textContent="आसपास के सैलून दूरी के अनुसार दिखाने के लिए “मेरी लोकेशन दिखाएँ” दबाएँ।";
-  if(docs.length)await plotSalonsOnMap(docs);else{if(initSalonMap())salonMarkers.clearLayers();mapStatus("अभी कोई LIVE salon उपलब्ध नहीं है।")}
+  if(docs.length)plotSalonsOnMap(docs).catch(err=>console.warn("Salon map update failed",err));else{if(initSalonMap())salonMarkers.clearLayers();mapStatus("अभी कोई LIVE salon उपलब्ध नहीं है।")}
  }
 }catch(e){console.error(e);$("salonList").textContent="Salon list लोड नहीं हुई। Firestore Rules जाँचें।";$("nearbySalonList").textContent="आसपास की सूची लोड नहीं हुई।"}}
 
@@ -600,7 +600,7 @@ async function adminDashboard(){
    const list=filtered();
    const rows=list.map(({id,d})=>{
     const status=String(d.status||"UNKNOWN").toUpperCase(),payment=String(d.paymentStatus||"NOT_SUBMITTED").toUpperCase();
-    const canApprove=(status==="WAITING_APPROVAL"||isSubmitted(d))&&["WAITING_APPROVAL","PENDING_PAYMENT","PENDING_REVIEW","REJECTED","LIVE","ACTIVE","APPROVED"].includes(status);
+    const canApprove=(status==="WAITING_APPROVAL"||(status==="REJECTED"&&payment==="REJECTED")||isSubmitted(d))&&["WAITING_APPROVAL","PENDING_PAYMENT","PENDING_REVIEW","REJECTED","LIVE","ACTIVE","APPROVED"].includes(status);
     const proof=d.paymentProofUrl&&/^https:\/\//i.test(String(d.paymentProofUrl))?'<a href="'+esc(d.paymentProofUrl)+'" target="_blank" rel="noopener noreferrer">Payment screenshot देखें</a>':'<span class="muted">Screenshot उपलब्ध नहीं</span>';
     const ownerWa="https://wa.me/91"+String(d.phone||"").replace(/\\D/g,"")+"?text="+encodeURIComponent("MY SALON registration: "+(d.name||"")+" | Owner: "+(d.ownerName||"")+" | Mobile: "+(d.phone||"")+" | "+[d.area,d.city,d.state].filter(Boolean).join(", "));return '<div class="item"><h4>'+esc(d.name||"Unnamed Salon")+' <span class="badge">'+esc(status)+'</span></h4><p>'+esc(d.ownerName||"")+' · '+esc(d.phone||"")+' · '+esc([d.area,d.city,d.state].filter(Boolean).join(", "))+'</p><p><b>Payment:</b> '+esc(payment)+' · <b>UTR:</b> '+esc(d.utr||"—")+'</p><p>'+proof+'</p><p>Plan: '+money(d.planFee||(status==="LIVE"?299:599))+' · Expiry: '+dateText(d.expiresAt)+'</p><div class="actions">'+(status==="WAITING_APPROVAL"?'<a class="btn alt" href="'+ownerWa+'" target="_blank" rel="noopener">WhatsApp Owner</a>':"")+(canApprove?'<button class="btn adminApproveBtn" data-id="'+id+'">Payment Received — Approve / LIVE</button>':"")+(isSubmitted(d)||isPending(d)?'<button class="btn alt adminRejectBtn" data-id="'+id+'">Reject</button>':"")+(status!=="SUSPENDED"&&isLive(d)?'<button class="btn alt adminSuspendBtn" data-id="'+id+'">Suspend</button>':"")+(status==="SUSPENDED"?'<button class="btn adminRestoreBtn" data-id="'+id+'">Restore</button>':"")+'</div></div>';
    }).join("");
@@ -624,7 +624,7 @@ async function adminDashboard(){
 window.adminApprove=async id=>{
  try{
   const salonRef=db.collection("salons").doc(id),snap=await salonRef.get();if(!snap.exists)return alert("Salon record नहीं मिला।");
-  const d=snap.data()||{},status=String(d.status||"").toUpperCase(),firstApproval=status==="WAITING_APPROVAL";
+  const d=snap.data()||{},status=String(d.status||"").toUpperCase(),firstApproval=status==="WAITING_APPROVAL"||(status==="REJECTED"&&d.paymentStatus==="REJECTED");
   if(firstApproval&&!confirm("क्या WhatsApp पर बात करके भुगतान प्राप्त हो गया है? Approve करते ही Salon LIVE होगा।"))return;
   if(!firstApproval&&(!d.utr||String(d.utr).trim().length<6||!/^https:\/\//i.test(String(d.paymentProofUrl||""))||!["SUBMITTED_FOR_REVIEW","RENEWAL_REVIEW"].includes(d.paymentStatus)))return alert("Renewal के लिए UTR और payment screenshot जाँचें।");
   if(!["WAITING_APPROVAL","PENDING_PAYMENT","PENDING_REVIEW","REJECTED","LIVE","ACTIVE","APPROVED"].includes(status))return alert("इस status वाले Salon को approve नहीं किया जा सकता।");
@@ -649,7 +649,8 @@ window.adminReject=async id=>{
 window.adminSuspend=async id=>{if(!confirm("क्या इस Salon को अस्थायी रूप से Suspend करना है?"))return;try{const batch=db.batch();batch.update(db.collection("salons").doc(id),{status:"SUSPENDED",updatedAt:firebase.firestore.FieldValue.serverTimestamp()});batch.delete(db.collection("publicSalons").doc(id));await batch.commit();showDashboard()}catch(err){alert("Suspend नहीं हुआ: "+err.message)}};
 window.adminRestore=async id=>{if(!confirm("क्या इस Salon को Restore करना है? Expiry date फिर भी लागू रहेगी।"))return;try{const ref=db.collection("salons").doc(id),snap=await ref.get();if(!snap.exists)return alert("Salon record नहीं मिला।");const d=snap.data()||{},batch=db.batch();batch.update(ref,{status:"LIVE",updatedAt:firebase.firestore.FieldValue.serverTimestamp()});batch.set(db.collection("publicSalons").doc(id),publicSalonData(id,{...d,status:"LIVE"}));await batch.commit();alert("Salon Restore हो गया। अगर अवधि समाप्त है तो Owner को Renewal करना होगा।");showDashboard()}catch(err){alert("Restore नहीं हुआ: "+err.message)}};
 async function pendingOwnerDashboard(){
- $("dashBody").innerHTML='<div class="panel"><h3>Waiting for Approval / मंज़ूरी का इंतज़ार</h3><div class="status">आपका Salon registration जमा हो गया है। Admin WhatsApp पर आपसे संपर्क करके भुगतान लेगा। भुगतान मिलने और Admin की मंज़ूरी के बाद आपका Salon तुरंत LIVE होगा।</div><p><b>Salon:</b> '+esc(mySalon.name)+'</p><p><b>Status:</b> WAITING FOR APPROVAL</p><p>Admin WhatsApp: <a href="https://wa.me/919112170192" target="_blank" rel="noopener">+91 91121 70192</a></p></div>';
+ const msg="MY SALON registration\\nSalon: "+(mySalon.name||"")+"\\nOwner: "+(mySalon.ownerName||"")+"\\nMobile: "+(mySalon.phone||"")+"\\nArea: "+(mySalon.area||"")+"\\nCity: "+(mySalon.city||"")+"\\nState: "+(mySalon.state||"")+"\\nAddress: "+(mySalon.address||"Not provided");
+ $("dashBody").innerHTML='<div class="panel"><h3>Waiting for Approval / मंज़ूरी का इंतज़ार</h3><div class="status">आपका Salon registration जमा हो गया है। Admin WhatsApp पर आपसे संपर्क करके भुगतान लेगा। भुगतान मिलने और Admin की मंज़ूरी के बाद आपका Salon तुरंत LIVE होगा।</div><p><b>Salon:</b> '+esc(mySalon.name)+'</p><p><b>Status:</b> WAITING FOR APPROVAL</p><p>Admin WhatsApp: <a href="https://wa.me/919112170192" target="_blank" rel="noopener">+91 91121 70192</a></p><a class="btn" href="https://wa.me/919112170192?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">Send Salon Details on WhatsApp</a></div>';
 }
 async function ownerDashboard(){
  const tabs=[["overview","Overview"],["services","Services"],["offers","Offers"],["appointments","Appointments"],["customers","Customers"],["payment","Renewal"]];
