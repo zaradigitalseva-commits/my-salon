@@ -129,7 +129,9 @@ service cloud.firestore {
           || request.resource.data.imageUrl.matches('^https://.+')
           || (
             request.resource.data.imageUrl.size() <= 140000
-            && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}
+            && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}$')
+          )
+        )
         && request.resource.data.address is string
         && request.resource.data.address.size() <= 200
         && request.resource.data.createdAt is timestamp
