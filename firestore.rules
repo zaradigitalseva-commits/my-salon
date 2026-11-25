@@ -127,7 +127,9 @@ service cloud.firestore {
         && (
           request.resource.data.imageUrl == ''
           || request.resource.data.imageUrl.matches('^https://.+')
-        )
+          || (
+            request.resource.data.imageUrl.size() <= 140000
+            && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}
         && request.resource.data.address is string
         && request.resource.data.address.size() <= 200
         && request.resource.data.createdAt is timestamp
@@ -389,6 +391,11 @@ service cloud.firestore {
         && request.resource.data.discount >= 0
         && request.resource.data.discount <= request.resource.data.amount
         && request.resource.data.paidAmount == request.resource.data.amount - request.resource.data.discount
+        && (!('customerUid' in request.resource.data)
+          || request.resource.data.customerUid == null
+          || request.resource.data.customerUid is string)
+        && (!('updatedAt' in request.resource.data)
+          || request.resource.data.updatedAt is timestamp)
         && request.resource.data.createdAt is timestamp;
 
       allow read: if isAdmin()
