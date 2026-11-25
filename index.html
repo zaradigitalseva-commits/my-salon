@@ -200,6 +200,23 @@ body.route-salons footer{margin-top:auto;background:linear-gradient(110deg,#3010
  body.route-salons #salons #salonList{gap:14px}
 }
 
+
+/* Directory polish correction: target the actual Home link and align layout with home branding */
+body.route-salons{background:#fff!important;color:#251b24!important;min-height:100vh}
+body.route-salons .legacy-header{background:linear-gradient(110deg,#30105f 0%,#7126a9 48%,#d62d91 100%)!important;border:0!important;box-shadow:0 8px 24px #60218a30!important}
+body.route-salons .legacy-nav .global-home-link{color:#fff!important;border-color:#ffffff80!important;background:#ffffff18!important;box-shadow:0 3px 0 #40145e!important}
+body.route-salons .legacy-nav .brand-name{background:linear-gradient(135deg,#fff,#ffe2f3)!important;color:#5c1a87!important;border:2px solid #fff!important;box-shadow:0 4px 0 #40145e,0 9px 18px #16062230!important}
+body.route-salons .legacy-home{width:100%;max-width:none;min-height:calc(100vh - 150px);margin:0;padding:0 20px 42px;background:radial-gradient(ellipse at 12% 10%,#fff0f7 0,transparent 36%),radial-gradient(ellipse at 90% 14%,#f0eaff 0,transparent 34%),linear-gradient(180deg,#fff 0%,#fff 100%)!important}
+body.route-salons #salons{width:min(100%,1120px)!important;max-width:1120px!important;margin:0 auto!important;padding:48px 20px 64px!important}
+body.route-salons #salons>.row{display:grid!important;grid-template-columns:minmax(0,1fr) 190px!important;gap:14px!important;align-items:center!important;padding:22px!important;border:1px solid #eadcf2!important;border-radius:22px!important;background:linear-gradient(135deg,#fff 0%,#fff8fc 58%,#f5f1ff 100%)!important;box-shadow:0 5px 0 #eadcf2,0 18px 38px #35104b12!important}
+body.route-salons #salons #search{width:100%!important;min-height:54px!important;padding:0 18px!important;border:1px solid #e5d8e9!important;border-radius:13px!important;background:#fff!important;color:#251b24!important;font-size:16px!important;box-shadow:inset 0 2px 5px #32104408!important}
+body.route-salons #salons #searchBtn{width:100%!important;min-height:54px!important;border:1px solid #ffffff70!important;border-radius:13px!important;background:linear-gradient(120deg,#6c278f,#a52c91 58%,#d32d91)!important;color:#fff!important;box-shadow:0 5px 0 #55206e,0 10px 20px #74228e25!important;font-weight:800!important}
+body.route-salons #salons #salonList{margin-top:26px!important;gap:20px!important}
+body.route-salons #salons #salonList>.muted{grid-column:1/-1!important;margin:8px 0!important;padding:24px!important;border:1px solid #eadcf2!important;border-radius:16px!important;background:#fff!important;color:#766b74!important;font-size:16px!important;box-shadow:0 8px 24px #3210440a!important}
+body.route-salons #salons .card{border:1px solid #eadcf2!important;border-radius:20px!important;background:#fff!important;box-shadow:0 5px 0 #eadcf2,0 16px 32px #32104412!important}
+body.route-salons footer{background:linear-gradient(110deg,#30105f 0%,#7126a9 48%,#b82382 100%)!important;color:#fff!important}
+@media(max-width:760px){body.route-salons .legacy-home{padding:0 0 28px!important}body.route-salons #salons{padding:28px 14px 42px!important}body.route-salons #salons>.row{grid-template-columns:1fr!important;padding:15px!important;gap:12px!important}body.route-salons #salons #search,body.route-salons #salons #searchBtn{min-height:50px!important}body.route-salons #salons #salonList{gap:14px!important}}
+
 </style></head><body class="guest-view"><script>const routePath=location.pathname.replace(/\/+$/,"")||"/";if(routePath==="/salons"){document.body.classList.add("route-salons");document.title="All Salons | MY SALON";}else if(routePath==="/register"){document.body.classList.add("route-register");document.title="Register Your Salon | MY SALON";}else if(routePath==="/admin"){document.body.classList.add("route-admin");document.title="Admin Dashboard | MY SALON";}</script>
 <header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><a class="global-home-link" href="/" aria-label="Go to Home">⌂ Home</a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/contact">Contact</a><a href="/register">Register Your Salon</a><button id="login" class="btn alt" type="button">Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
 <main class="legacy-home">
