@@ -70,8 +70,22 @@ service cloud.firestore {
           && resource.data.salonId == salonId
           && request.resource.data.salonId == resource.data.salonId
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
+            'phone', 'whatsapp', 'address', 'imageUrl', 'description',
+            'openingHours', 'facebookUrl', 'updatedAt'
           ])
+          && request.resource.data.phone is string
+          && request.resource.data.phone.matches('^[0-9]{10}$')
+          && request.resource.data.address is string
+          && request.resource.data.address.size() <= 200
+          && request.resource.data.imageUrl is string
+          && (
+            request.resource.data.imageUrl == ''
+            || request.resource.data.imageUrl.matches('^https://.+')
+            || (
+              request.resource.data.imageUrl.size() <= 140000
+              && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}$')
+            )
+          )
           && request.resource.data.whatsapp is string
           && (
             request.resource.data.whatsapp == ''
@@ -106,8 +120,8 @@ service cloud.firestore {
           'planFee', 'createdAt', 'updatedAt'
         ])
         && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.status == 'PENDING_PAYMENT'
-        && request.resource.data.paymentStatus == 'NOT_SUBMITTED'
+        && request.resource.data.status == 'WAITING_APPROVAL'
+        && request.resource.data.paymentStatus == 'AWAITING_ADMIN_PAYMENT'
         && request.resource.data.planFee == 599
         && request.resource.data.name is string
         && request.resource.data.name.size() > 0
@@ -162,8 +176,22 @@ service cloud.firestore {
         || (
           ownsActiveSalon(salonId)
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'whatsapp', 'description', 'openingHours', 'facebookUrl', 'updatedAt'
+            'phone', 'whatsapp', 'address', 'imageUrl', 'description',
+            'openingHours', 'facebookUrl', 'updatedAt'
           ])
+          && request.resource.data.phone is string
+          && request.resource.data.phone.matches('^[0-9]{10}$')
+          && request.resource.data.address is string
+          && request.resource.data.address.size() <= 200
+          && request.resource.data.imageUrl is string
+          && (
+            request.resource.data.imageUrl == ''
+            || request.resource.data.imageUrl.matches('^https://.+')
+            || (
+              request.resource.data.imageUrl.size() <= 140000
+              && request.resource.data.imageUrl.matches('^data:image/webp;base64,[A-Za-z0-9+/]+={0,2}$')
+            )
+          )
           && request.resource.data.whatsapp is string
           && (
             request.resource.data.whatsapp == ''
