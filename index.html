@@ -237,8 +237,19 @@ body.route-home #salons,body.route-home #register,body.route-home #dashboard,bod
 body.route-about #register,body.route-about #dashboard,body.route-about #salonDetail{display:none!important}
 body.route-services #register,body.route-services #dashboard,body.route-services #salonDetail{display:none!important}
 body.route-contact #register,body.route-contact #dashboard,body.route-contact #salonDetail{display:none!important}
+
+/* Whole-site language selector */
+.language-switcher{display:flex;align-items:center;gap:6px;margin-left:auto;flex:0 0 auto}
+.language-switcher label{color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
+.language-switcher select{width:auto;min-width:112px;max-width:145px;padding:8px 26px 8px 10px;border:1px solid #ffffff70;border-radius:6px;background:#171317;color:#fff;font:700 12px Arial,sans-serif;cursor:pointer}
+#google_translate_element{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+.goog-te-banner-frame,.skiptranslate iframe{display:none!important}
+body{top:0!important}
+.goog-logo-link,.goog-te-gadget span{display:none!important}
+.goog-te-gadget{font-size:0!important}
+@media(max-width:760px){.language-switcher{margin-left:auto;margin-right:8px}.language-switcher label{font-size:11px}.language-switcher select{min-width:98px;max-width:110px;padding:7px 5px;font-size:11px}}
 </style></head><body class="guest-view"><script>const routePath=location.pathname.replace(/\/+$/,"")||"/";if(routePath==="/"){document.body.classList.add("route-home");document.title="MY SALON | Beauty, Cosmetics and Personal Care";}else if(routePath==="/about"){document.body.classList.add("route-about");document.title="About MY SALON";}else if(routePath==="/services"){document.body.classList.add("route-services");document.title="Services | MY SALON";}else if(routePath==="/contact"){document.body.classList.add("route-contact");document.title="Contact | MY SALON";}else if(routePath==="/salons"){document.body.classList.add("route-salons");document.title="All Salons | MY SALON";}else if(routePath==="/register"){document.body.classList.add("route-register");document.title="Register Your Salon | MY SALON";}else if(routePath==="/admin"){document.body.classList.add("route-admin");document.title="Admin Dashboard | MY SALON";}else if(routePath==="/privacy-policy"){document.body.classList.add("route-privacy");document.title="Privacy Policy | MY SALON";}</script>
-<header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><a class="global-home-link" href="/" aria-label="Go to Home">⌂ Home</a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/register">Register Your Salon</a><button id="login" class="btn alt" type="button">Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
+<header class="legacy-header"><div class="nav legacy-nav"><a class="brand" id="brandLink" href="/" aria-label="MY SALON home"><span class="brand-name" id="brandName">MY SALON</span></a><a class="global-home-link" href="/" aria-label="Go to Home">⌂ Home</a><div class="language-switcher"><label for="siteLanguage">Language</label><select id="siteLanguage" aria-label="Change website language" onchange="changeSiteLanguage(this.value)"><option value="">Select</option><option value="hi">हिन्दी</option><option value="en">English</option></select></div><div id="google_translate_element" aria-hidden="true"></div><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">☰</button><nav class="navlinks" id="mainNav"><a href="/register">Register Your Salon</a><button id="login" class="btn alt" type="button">Login</button><button id="dashBtn" class="btn hidden" type="button">Dashboard</button></nav></div></header>
 <main class="legacy-home">
 <section class="legacy-hero" id="marketHome"><div class="legacy-hero-image"><img src="https://my-salon.vercel.app/images/image1.WebP" alt="MY SALON original ZIP hero banner" onerror="this.onerror=null;this.src='https://my-salon.vercel.app/images/image1.WebP'"></div><div class="legacy-hero-overlay" aria-hidden="true"></div><div class="legacy-hero-copy"><h1>MY SALON</h1><p class="legacy-subtitle">BEAUTY, COSMETICS<br>AND PERSONAL CARE</p><a class="legacy-call" id="callUsButton" href="/salons">CALL US</a></div></section>
 <section class="legacy-section legacy-about-page" id="legacyAboutPage"><h2>About MY SALON / हमारे बारे में</h2><div class="legacy-about-page-grid"><div><h3>Your local beauty &amp; salon discovery platform / आपका स्थानीय ब्यूटी और सैलून खोज प्लेटफॉर्म</h3><p><strong>English:</strong> <strong>MY SALON</strong> is an online platform that connects customers and salon owners in one place. Our goal is to help people easily discover salons nearby and help salon owners reach more customers with their services.</p><p><strong>हिंदी:</strong> <strong>MY SALON</strong> ग्राहकों और सैलून मालिकों को एक ही ऑनलाइन प्लेटफॉर्म पर जोड़ने के लिए बनाया गया है। हमारा उद्देश्य है कि लोग अपने आसपास अच्छे सैलून आसानी से खोज सकें और सैलून मालिक अपनी सेवाएँ ज़्यादा ग्राहकों तक पहुँचा सकें।</p><p><strong>English:</strong> Customers can search for salons by area, city or state. They can view each salon’s profile, available services, prices, address, opening hours and contact information. After choosing a salon, customers can contact it directly for appointment requests or service enquiries.</p><p><strong>हिंदी:</strong> ग्राहक अपने इलाके, शहर या राज्य के अनुसार सैलून खोज सकते हैं। वे हर सैलून की प्रोफाइल, उपलब्ध सेवाएँ, कीमतें, पता, खुलने का समय और संपर्क जानकारी देख सकते हैं। पसंद का सैलून चुनने के बाद ग्राहक अपॉइंटमेंट या सेवा की जानकारी के लिए सीधे उस सैलून से संपर्क कर सकते हैं।</p><p><strong>English:</strong> Salon owners can register their salons on MY SALON, display their business information and services to customers, and build their online presence. After registration, the submitted information and payment are checked. A salon goes LIVE only after approval by the Super Admin.</p><p><strong>हिंदी:</strong> सैलून मालिक MY SALON पर अपना सैलून रजिस्टर कर सकते हैं, अपनी जानकारी और सेवाओं को ग्राहकों के सामने दिखा सकते हैं और ऑनलाइन पहचान बढ़ा सकते हैं। रजिस्ट्रेशन के बाद जानकारी और भुगतान की जाँच तथा Super Admin की मंज़ूरी होने पर सैलून LIVE किया जाता है।</p><h3>Our Purpose / हमारा उद्देश्य</h3><p><strong>English:</strong> To give local salons a digital presence and make it easier for customers to find the right salon, the right service and the contact information they need.</p><p><strong>हिंदी:</strong> स्थानीय सैलून को डिजिटल पहचान देना और ग्राहकों के लिए सही सैलून, सही सेवा और संपर्क जानकारी ढूँढना आसान बनाना।</p><p><strong>MY SALON — Discover nearby salons, explore services and contact them directly.</strong></p><p><strong>MY SALON — अपने आसपास का सैलून खोजें, सेवाएँ जानें और सीधे संपर्क करें।</strong></p><a class="shop-contact-link" href="/salons">Find a Salon</a> <a class="shop-contact-link" href="/register">Register Your Salon</a></div></div></section><section class="legacy-section legacy-about" id="marketAbout"><h2>Our success secret</h2><p>MY SALON brings customers and beauty professionals together in one simple place. Discover salons, explore the services they offer, compare details and contact the salon that suits your needs.</p></section>
@@ -552,4 +563,39 @@ function applyPublicRoute(){const path=location.pathname.replace(/\/+$/,'')||'/'
 const menuToggle=document.getElementById("menuToggle"),mainNav=document.getElementById("mainNav");if(menuToggle&&mainNav){menuToggle.addEventListener("click",()=>{const opened=mainNav.classList.toggle("is-open");menuToggle.setAttribute("aria-expanded",String(opened));menuToggle.setAttribute("aria-label",opened?"Close menu":"Open menu");menuToggle.textContent=opened?"×":"☰";});mainNav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{mainNav.classList.remove("is-open");menuToggle.setAttribute("aria-expanded","false");menuToggle.setAttribute("aria-label","Open menu");menuToggle.textContent="☰";}));}document.querySelectorAll('#mainNav a').forEach(a=>a.addEventListener('click',e=>{const u=new URL(a.href,location.origin);if(u.origin!==location.origin)return;e.preventDefault();history.pushState({},'',u.pathname);applyPublicRoute();window.scrollTo({top:0,behavior:'smooth'});}));window.addEventListener('popstate',applyPublicRoute);applyPublicRoute();
 loadSalons();
 // CALL US is a normal /salons link so navigation works even if client-side handlers fail.
-</script></body></html>
+</script>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({pageLanguage:'hi',includedLanguages:'hi,en',autoDisplay:false},'google_translate_element');
+}
+function changeSiteLanguage(language){
+  if(!language)return;
+  var select=document.querySelector('.goog-te-combo');
+  if(select){select.value=language;select.dispatchEvent(new Event('change'));}
+  else{
+    window.__pendingSiteLanguage=language;
+    if(!document.getElementById('googleTranslateScript')){
+      var script=document.createElement('script');
+      script.id='googleTranslateScript';
+      script.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.onerror=function(){alert('Language service अभी उपलब्ध नहीं है। कृपया दोबारा कोशिश करें।');};
+      document.head.appendChild(script);
+    }
+  }
+}
+window.addEventListener('load',function(){
+  var lang=document.getElementById('siteLanguage');
+  if(lang){lang.value='';}
+  var observer=new MutationObserver(function(){
+    var select=document.querySelector('.goog-te-combo');
+    if(select&&window.__pendingSiteLanguage){
+      var language=window.__pendingSiteLanguage;
+      window.__pendingSiteLanguage='';
+      select.value=language;
+      select.dispatchEvent(new Event('change'));
+    }
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+});
+</script>
+</body></html>
